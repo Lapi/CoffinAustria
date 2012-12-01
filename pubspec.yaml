@@ -1,0 +1,8 @@
+name:  CoffinAustria
+description:  A sample application
+
+dependencies:
+  puremvc: ">=2.0.1 <3.0.0"
+
+#  js: any
+#  unittest: { sdk: unittest }
