@@ -559,7 +559,7 @@ $$._HashMapImpl = {"":"Object;_keys>,_values,_loadLimit,_numberOfEntries,_number
   for (insertionIndex = -1, numberOfProbes = 1; true; numberOfProbes = numberOfProbes0) {
     t1 = this._keys;
     if (typeof t1 !== 'string' && (typeof t1 !== 'object' || t1 === null || t1.constructor !== Array && !t1.is$JavaScriptIndexingBehavior))
-      return this._probeForAdding$1$bailout(3, key, numberOfProbes, hash, t1, insertionIndex);
+      return this._probeForAdding$1$bailout(3, key, hash, numberOfProbes, t1, insertionIndex);
     if (hash < 0 || hash >= t1.length)
       throw $.ioore(hash);
     existingKey = t1[hash];
@@ -592,8 +592,8 @@ $$._HashMapImpl = {"":"Object;_keys>,_values,_loadLimit,_numberOfEntries,_number
     case 3:
       insertionIndex = env4;
       t1 = env3;
-      hash = env2;
-      numberOfProbes = env1;
+      numberOfProbes = env2;
+      hash = env1;
       key = env0;
       break;
     case 4:
@@ -1860,7 +1860,7 @@ $$.RequestHandler = {"":"Object;connections>",
   $.print("new ws conn");
   t1 = this.connections;
   $.getInterceptor$JSArray(t1).add$1(t1, conn);
-  conn.set$onClosed(new $.RequestHandler_onOpen_anon(conn, this));
+  conn.set$onClosed(new $.RequestHandler_onOpen_anon(this, conn));
   conn.set$onMessage(new $.RequestHandler_onOpen_anon0(conn));
 },
  get$onOpen: function() {
@@ -2365,7 +2365,7 @@ $$._DirectoryLister = {"":"Object;_onDir>,_onFile>,_onDone>,_onError>",
   request[2] = recursive;
   responsePort = $.ReceivePort_ReceivePort();
   $._Directory__newServicePort().send$2(request, responsePort.toSendPort$0());
-  responsePort.receive$1(new $.anon5(this, 2, 3, 0, 1, path, 1, 2, 0, responsePort, 1));
+  responsePort.receive$1(new $.anon5(2, this, 3, 0, 1, path, 1, 2, 0, responsePort, 1));
 }
 };
 
@@ -2736,7 +2736,7 @@ $$._RandomAccessFile = {"":"_FileBase;_name>,_liblib0$_id=,_fileService",
     this._fileService = $._FileUtils__newServicePort();
   completer = $.Completer_Completer();
   if (!(typeof buffer === 'object' && buffer !== null && (buffer.constructor === Array || !!buffer.is$List)) || !(typeof offset === 'number' && Math.floor(offset) === offset) || !(typeof bytes === 'number' && Math.floor(bytes) === bytes)) {
-    $.Timer_Timer(0, new $._RandomAccessFile_readList_anon(this, completer));
+    $.Timer_Timer(0, new $._RandomAccessFile_readList_anon(completer, this));
     return completer.get$future();
   }
   if (this.get$closed() === true)
@@ -2746,7 +2746,7 @@ $$._RandomAccessFile = {"":"_FileBase;_name>,_liblib0$_id=,_fileService",
   request[0] = 17;
   request[1] = this._liblib0$_id;
   request[2] = bytes;
-  return this._fileService.call$1(request).transform$1(new $._RandomAccessFile_readList_anon0(buffer, this, offset));
+  return this._fileService.call$1(request).transform$1(new $._RandomAccessFile_readList_anon0(buffer, offset, this));
 },
  writeList$3: function(buffer, offset, bytes, exception) {
   var completer, t1, t2, result, e, request;
@@ -3081,7 +3081,7 @@ $$._HttpHeaders = {"":"Object;_mutable<,_headers>,_noFoldingHeaders,_host,_port<
   t1.bufferPos_0 = 0;
   t2 = new $._HttpHeaders__write_writeBuffer(t1, buffer, connection);
   t3 = this._headers;
-  $.getInterceptor$JSArray(t3).forEach$1(t3, new $._HttpHeaders__write_anon(t1, buffer, t2, this, 16384));
+  $.getInterceptor$JSArray(t3).forEach$1(t3, new $._HttpHeaders__write_anon(t1, buffer, t2, 16384, this));
   t2.call$0();
 },
  toString$0: function() {
@@ -4673,16 +4673,16 @@ $$._HttpParser = {"":"Object;_liblib0$_buffer,_index,_lastIndex,_requestParser>,
       t2 = env4;
       tokens = env3;
       t1 = env2;
-      headerValue = env1;
-      start = env0;
+      start = env1;
+      headerValue = env0;
       break;
     case 5:
       index = env5;
       tokens = env4;
       t2 = env3;
       t1 = env2;
-      headerValue = env1;
-      start = env0;
+      start = env1;
+      headerValue = env0;
       break;
   }
   switch (state0) {
@@ -6696,9 +6696,9 @@ $$._WebSocketConnectionBase = {"":"Object;_socket>,_closeTimer>,_onClosed=,_outp
   processor.onClosed = this.get$_onWebSocketClosed();
   if (!(unparsedData == null))
     processor.update$3(unparsedData, 0, $.getInterceptor$JSStringJSArray(unparsedData).get$length(unparsedData));
-  t1 = new $._WebSocketConnectionBase__startProcessing_anon(processor, this);
+  t1 = new $._WebSocketConnectionBase__startProcessing_anon(this, processor);
   this._socket.set$onData(t1);
-  t1 = new $._WebSocketConnectionBase__startProcessing_anon0(processor, this);
+  t1 = new $._WebSocketConnectionBase__startProcessing_anon0(this, processor);
   this._socket.set$onClosed(t1);
 },
  set$onMessage: function(callback) {
@@ -8545,7 +8545,7 @@ $$._Timer = {"":"Object;_once,_handle",
     t2().clearInterval$1(this._handle);
 },
  _Timer$2: function(milliSeconds, callback) {
-  this._handle = $._window().setTimeout$2(new $.anon0(callback, this), milliSeconds);
+  this._handle = $._window().setTimeout$2(new $.anon0(this, callback), milliSeconds);
 }
 };
 
@@ -9798,28 +9798,28 @@ $$._HttpServer_listenOn_onConnection = {"":"Closure;this_0",
   t2 = t1.get$_connections();
   $.getInterceptor$JSArray(t2).add$1(t2, connection);
   connection.onRequestReceived = t1.get$_handleRequest();
-  connection.onClosed = new $._HttpServer_listenOn_onConnection_anon(t1, connection);
-  connection.onDetach = new $._HttpServer_listenOn_onConnection_anon0(t1, connection);
-  connection.onError = new $._HttpServer_listenOn_onConnection_anon1(t1, connection);
+  connection.onClosed = new $._HttpServer_listenOn_onConnection_anon(connection, t1);
+  connection.onDetach = new $._HttpServer_listenOn_onConnection_anon0(connection, t1);
+  connection.onError = new $._HttpServer_listenOn_onConnection_anon1(connection, t1);
 }
 };
 
-$$._HttpServer_listenOn_onConnection_anon = {"":"Closure;this_1,connection_2",
+$$._HttpServer_listenOn_onConnection_anon = {"":"Closure;connection_1,this_2",
  call$0: function() {
-  return this.this_1.get$_connections().remove$1(this.connection_2);
+  return this.this_2.get$_connections().remove$1(this.connection_1);
 }
 };
 
-$$._HttpServer_listenOn_onConnection_anon0 = {"":"Closure;this_3,connection_4",
+$$._HttpServer_listenOn_onConnection_anon0 = {"":"Closure;connection_3,this_4",
  call$0: function() {
-  return this.this_3.get$_connections().remove$1(this.connection_4);
+  return this.this_4.get$_connections().remove$1(this.connection_3);
 }
 };
 
-$$._HttpServer_listenOn_onConnection_anon1 = {"":"Closure;this_5,connection_6",
+$$._HttpServer_listenOn_onConnection_anon1 = {"":"Closure;connection_5,this_6",
  call$1: function(e) {
-  var t1 = this.this_5;
-  t1.get$_connections().remove$1(this.connection_6);
+  var t1 = this.this_6;
+  t1.get$_connections().remove$1(this.connection_5);
   if (!(t1.get$_onError() == null))
     t1._onError$1(e);
   else
@@ -10156,18 +10156,18 @@ $$._HttpHeaders__write_writeBuffer = {"":"Closure;box_0,buffer_1,connection_2",
 }
 };
 
-$$._HttpHeaders__write_anon = {"":"Closure;box_0,buffer_3,writeBuffer_4,this_5,bufferSize_6",
+$$._HttpHeaders__write_anon = {"":"Closure;box_0,buffer_3,writeBuffer_4,bufferSize_5,this_6",
  call$2: function(name$, values) {
   var fold, nameData, nameDataLen, t1, t2, t4, t5, t3, i, t6, data, dataLen, t7;
   if (typeof values !== 'string' && (typeof values !== 'object' || values === null || values.constructor !== Array && !values.is$JavaScriptIndexingBehavior))
     return this.call$2$bailout0(1, name$, values);
-  fold = this.this_5._foldHeader$1(name$);
+  fold = this.this_6._foldHeader$1(name$);
   nameData = $.getInterceptor$JSString(name$).get$charCodes(name$);
   nameDataLen = $.getInterceptor$JSStringJSArray(nameData).get$length(nameData);
   if (typeof nameDataLen !== 'number')
     return this.call$2$bailout0(2, nameData, values, nameDataLen, fold);
   t1 = nameDataLen + 2;
-  t2 = this.bufferSize_6;
+  t2 = this.bufferSize_5;
   if (typeof t2 !== 'number')
     return this.call$2$bailout0(3, values, fold, nameData, nameDataLen, t1, t2);
   t4 = this.box_0;
@@ -10307,13 +10307,13 @@ $$._HttpHeaders__write_anon = {"":"Closure;box_0,buffer_3,writeBuffer_4,this_5,b
     case 0:
     case 1:
       state0 = 0;
-      fold = this.this_5._foldHeader$1(name$);
+      fold = this.this_6._foldHeader$1(name$);
       nameData = $.getInterceptor$JSString(name$).get$charCodes(name$);
       nameDataLen = $.getInterceptor$JSStringJSArray(nameData).get$length(nameData);
     case 2:
       state0 = 0;
       t1 = $.add(nameDataLen, 2);
-      t2 = this.bufferSize_6;
+      t2 = this.bufferSize_5;
     case 3:
       state0 = 0;
       t4 = this.box_0;
@@ -10414,9 +10414,9 @@ $$._BaseDataInputStream__checkScheduleCallbacks_issueCloseCallback = {"":"Closur
 }
 };
 
-$$.anon0 = {"":"Closure;callback_0,this_1",
+$$.anon0 = {"":"Closure;this_0,callback_1",
  call$0: function() {
-  return this.callback_0.call$1(this.this_1);
+  return this.callback_1.call$1(this.this_0);
 }
 };
 
@@ -10574,23 +10574,23 @@ $$._HashSetImpl_addAll_anon = {"":"Closure;this_0",
 }
 };
 
-$$._WebSocketConnectionBase__startProcessing_anon = {"":"Closure;processor_0,this_1",
+$$._WebSocketConnectionBase__startProcessing_anon = {"":"Closure;this_0,processor_1",
  call$0: function() {
   var t1, available, data, read;
-  t1 = this.this_1;
+  t1 = this.this_0;
   available = t1.get$_socket().available$0();
   data = $.List_List(available, '$.$int');
   $.setRuntimeTypeInfo(data, ['$.$int']);
   read = t1.get$_socket().readList$3(data, 0, available);
-  this.processor_0.update$3(data, 0, read);
+  this.processor_1.update$3(data, 0, read);
 }
 };
 
-$$._WebSocketConnectionBase__startProcessing_anon0 = {"":"Closure;processor_2,this_3",
+$$._WebSocketConnectionBase__startProcessing_anon0 = {"":"Closure;this_2,processor_3",
  call$0: function() {
   var t1, t2;
-  this.processor_2.closed$0();
-  t1 = this.this_3;
+  this.processor_3.closed$0();
+  t1 = this.this_2;
   if (t1.get$_closeSent() === true) {
     t2 = t1.get$_closeTimer();
     if (!(t2 == null))
@@ -10668,7 +10668,8 @@ $$.startLogging_anon = {"":"Closure;box_0",
 
 $$.startLogging__anon = {"":"Closure;box_0,msg_1",
  call$0: function() {
-  this.box_0.out_1.writeString$1($.S($.Date_Date$now()) + " : " + $.S(this.msg_1) + "\n");
+  var a = $.S($.Date_Date$now()) + " : " + $.S(this.msg_1) + "\n";
+  this.box_0.out_1.writeString$1(a);
 }
 };
 
@@ -10845,22 +10846,22 @@ $$._RandomAccessFile_writeList_anon1 = {"":"Closure;this_4",
 }
 };
 
-$$._RandomAccessFile_readList_anon = {"":"Closure;this_0,completer_1",
+$$._RandomAccessFile_readList_anon = {"":"Closure;completer_0,this_1",
  call$1: function(t) {
-  this.completer_1.completeException$1($.FileIOException$("Invalid arguments to readList for file '" + $.S(this.this_0.get$_name()) + "'", null));
+  this.completer_0.completeException$1($.FileIOException$("Invalid arguments to readList for file '" + $.S(this.this_1.get$_name()) + "'", null));
 }
 };
 
-$$._RandomAccessFile_readList_anon0 = {"":"Closure;buffer_2,this_3,offset_4",
+$$._RandomAccessFile_readList_anon0 = {"":"Closure;buffer_2,offset_3,this_4",
  call$1: function(response) {
   var t1, read, data;
-  t1 = this.this_3;
+  t1 = this.this_4;
   if (t1._isErrorResponse$1(response) === true)
     throw $.$$throw(t1._exceptionFromResponse$2(response, "readList failed for file '" + $.S(t1.get$_name()) + "'"));
   read = $.index(response, 1);
   data = $.index(response, 2);
   t1 = this.buffer_2;
-  $.getInterceptor$JSArray(t1).setRange$3(t1, this.offset_4, read, data);
+  $.getInterceptor$JSArray(t1).setRange$3(t1, this.offset_3, read, data);
   return read;
 }
 };
@@ -11108,7 +11109,7 @@ $$.StaticFileHandler_onRequest_anon = {"":"Closure;response_0,file_1,this_2",
   t2 = this.response_0;
   if (t1) {
     t1 = this.file_1;
-    t1.fullPath$0().then$1(new $.StaticFileHandler_onRequest__anon(t2, this.this_2, t1));
+    t1.fullPath$0().then$1(new $.StaticFileHandler_onRequest__anon(t2, t1, this.this_2));
   } else {
     t2.set$statusCode(404);
     t2.get$outputStream().close$0();
@@ -11116,7 +11117,7 @@ $$.StaticFileHandler_onRequest_anon = {"":"Closure;response_0,file_1,this_2",
 }
 };
 
-$$.StaticFileHandler_onRequest__anon = {"":"Closure;response_3,this_4,file_5",
+$$.StaticFileHandler_onRequest__anon = {"":"Closure;response_3,file_4,this_5",
  call$1: function(fullPath) {
   var t1, t2;
   t1 = $.getInterceptor$JSString(fullPath).startsWith$1(fullPath, $.get$basePath()) !== true;
@@ -11125,7 +11126,7 @@ $$.StaticFileHandler_onRequest__anon = {"":"Closure;response_3,this_4,file_5",
     t2.set$statusCode(404);
     t2.get$outputStream().close$0();
   } else
-    this.file_5.openInputStream$0().pipe$1(t2.get$outputStream());
+    this.file_4.openInputStream$0().pipe$1(t2.get$outputStream());
 }
 };
 
@@ -11240,10 +11241,10 @@ $$._FileInputStream__setupOpenedFile_anon0 = {"":"Closure;this_1",
 }
 };
 
-$$.RequestHandler_onOpen_anon = {"":"Closure;conn_0,this_1",
+$$.RequestHandler_onOpen_anon = {"":"Closure;this_0,conn_1",
  call$2: function(status$, reason) {
   $.print("conn is closed");
-  this.this_1.get$connections().remove$1(this.conn_0);
+  this.this_0.get$connections().remove$1(this.conn_1);
 }
 };
 
@@ -11284,7 +11285,7 @@ $$._getCarousellItems_anon0 = {"":"Closure;conn_0",
 }
 };
 
-$$.anon5 = {"":"Closure;this_0,LIST_ERROR_1,LIST_DONE_2,RESPONSE_TYPE_3,RESPONSE_PATH_4,path_5,RESPONSE_COMPLETE_6,RESPONSE_ERROR_7,LIST_DIRECTORY_8,responsePort_9,LIST_FILE_10",
+$$.anon5 = {"":"Closure;LIST_ERROR_0,this_1,LIST_DONE_2,RESPONSE_TYPE_3,RESPONSE_PATH_4,path_5,RESPONSE_COMPLETE_6,RESPONSE_ERROR_7,LIST_DIRECTORY_8,responsePort_9,LIST_FILE_10",
  call$2: function(message, replyTo) {
   var t1, t2, errorType, responseError, err, errorPath;
   if (typeof message === 'object' && message !== null && (message.constructor === Array || !!message.is$List)) {
@@ -11295,39 +11296,39 @@ $$.anon5 = {"":"Closure;this_0,LIST_ERROR_1,LIST_DONE_2,RESPONSE_TYPE_3,RESPONSE
     t1 = true;
   if (t1) {
     this.responsePort_9.close$0();
-    this.this_0._reportError$1($.DirectoryIOException$("Internal error", "", null));
+    this.this_1._reportError$1($.DirectoryIOException$("Internal error", "", null));
     return;
   }
   $0: {
     t1 = $.index(message, this.RESPONSE_TYPE_3);
     if ($.eqB(this.LIST_DIRECTORY_8, t1)) {
-      t1 = this.this_0;
+      t1 = this.this_1;
       if (!(t1.get$_onDir() == null))
         t1._onDir$1($.index(message, this.RESPONSE_PATH_4));
       break $0;
     } else if ($.eqB(this.LIST_FILE_10, t1)) {
-      t1 = this.this_0;
+      t1 = this.this_1;
       if (!(t1.get$_onFile() == null))
         t1._onFile$1($.index(message, this.RESPONSE_PATH_4));
       break $0;
-    } else if ($.eqB(this.LIST_ERROR_1, t1)) {
+    } else if ($.eqB(this.LIST_ERROR_0, t1)) {
       t1 = this.RESPONSE_ERROR_7;
       errorType = $.index($.index(message, t1), 0);
       if ($.eqB(errorType, 1))
-        this.this_0._reportError$1($.ArgumentError$(null));
+        this.this_1._reportError$1($.ArgumentError$(null));
       else if ($.eqB(errorType, 2)) {
         responseError = $.index(message, t1);
         err = $.OSError$($.index(responseError, 2), $.index(responseError, 1));
         errorPath = $.index(message, this.RESPONSE_PATH_4);
         if (errorPath == null)
           errorPath = this.path_5;
-        this.this_0._reportError$1($.DirectoryIOException$("Directory listing failed", errorPath, err));
+        this.this_1._reportError$1($.DirectoryIOException$("Directory listing failed", errorPath, err));
       } else
-        this.this_0._reportError$1($.DirectoryIOException$("Internal error", "", null));
+        this.this_1._reportError$1($.DirectoryIOException$("Internal error", "", null));
       break $0;
     } else if ($.eqB(this.LIST_DONE_2, t1)) {
       this.responsePort_9.close$0();
-      t1 = this.this_0;
+      t1 = this.this_1;
       if (!(t1.get$_onDone() == null))
         t1._onDone$1($.index(message, this.RESPONSE_COMPLETE_6));
       break $0;
@@ -11921,6 +11922,10 @@ $.isSubtype = function(s, t) {
   return true;
 };
 
+$.typeNameInChrome = function(obj) {
+  return $.typeNameInWebKitCommon(obj.constructor.name);
+};
+
 $.typeNameInSafari = function(obj) {
   return $.typeNameInWebKitCommon($.constructorNameFallback(obj));
 };
@@ -12070,8 +12075,19 @@ $.stringJoinUnchecked = function(array, separator) {
   return array.join(separator);
 };
 
-$.typeNameInChrome = function(obj) {
-  return $.typeNameInWebKitCommon(obj.constructor.name);
+$.dynamicFunction = function(name$) {
+  var f, methods, dartMethod, bind;
+  f = Object.prototype[name$];
+  if (!(f == null) && !!f.methods)
+    return f.methods;
+  methods = {};
+  dartMethod = Object.getPrototypeOf($.CONSTANT28)[name$];
+  if (!(dartMethod == null))
+    methods["Object"] = dartMethod;
+  bind = function() {return $.dynamicBind.call$4(this, name$, methods, Array.prototype.slice.call(arguments));};
+  bind.methods = methods;
+  $.defineProperty(Object.prototype, name$, bind);
+  return methods;
 };
 
 $.getTypeNameOf = function(obj) {
@@ -12189,21 +12205,6 @@ $.dynamicBind = function(obj, name$, methods, arguments$) {
   if (!$.callHasOwnProperty(hasOwnPropertyFunction, proto, name$))
     $.defineProperty(proto, name$, method);
   return method.apply(obj, arguments$);
-};
-
-$.dynamicFunction = function(name$) {
-  var f, methods, dartMethod, bind;
-  f = Object.prototype[name$];
-  if (!(f == null) && !!f.methods)
-    return f.methods;
-  methods = {};
-  dartMethod = Object.getPrototypeOf($.CONSTANT28)[name$];
-  if (!(dartMethod == null))
-    methods["Object"] = dartMethod;
-  bind = function() {return $.dynamicBind.call$4(this, name$, methods, Array.prototype.slice.call(arguments));};
-  bind.methods = methods;
-  $.defineProperty(Object.prototype, name$, bind);
-  return methods;
 };
 
 $.alternateTag = function(object, tag) {
@@ -12361,6 +12362,12 @@ $._DateImpl$fromMillisecondsSinceEpoch = function(millisecondsSinceEpoch, isUtc)
   return t1;
 };
 
+$._DateImpl$now = function() {
+  var t1 = new $._DateImpl($.Primitives_dateNow(), false);
+  t1._DateImpl$now$0();
+  return t1;
+};
+
 $._ensureFastAndSerializableBuffer = function(buffer, offset, bytes) {
   var newBuffer, j, i, value;
   if (typeof buffer !== 'string' && (typeof buffer !== 'object' || buffer === null || buffer.constructor !== Array && !buffer.is$JavaScriptIndexingBehavior))
@@ -12397,12 +12404,6 @@ $._HttpHeaders$ = function() {
 $._DirectoryLister$ = function(path, recursive) {
   var t1 = new $._DirectoryLister(null, null, null, null);
   t1._DirectoryLister$2(path, recursive);
-  return t1;
-};
-
-$._DateImpl$now = function() {
-  var t1 = new $._DateImpl($.Primitives_dateNow(), false);
-  t1._DateImpl$now$0();
   return t1;
 };
 
@@ -12466,16 +12467,16 @@ $.WebSocketHandler_WebSocketHandler = function() {
   return $._WebSocketHandler$();
 };
 
-$._WebSocketHandler$ = function() {
-  return new $._WebSocketHandler(null);
-};
-
 $._StopwatchImpl__frequency = function() {
   return 1000000;
 };
 
 $._StopwatchImpl$ = function() {
   return new $._StopwatchImpl(null, null);
+};
+
+$._WebSocketHandler$ = function() {
+  return new $._WebSocketHandler(null);
 };
 
 $._StopwatchImpl__now = function() {
@@ -12490,6 +12491,10 @@ $.TransferObject$ = function() {
   var t1 = $.List_List(null, '$.String');
   $.setRuntimeTypeInfo(t1, ['$.String']);
   return new $.TransferObject(null, null, t1);
+};
+
+$.JSON_parse = function(json) {
+  return $._JsonParser$(json).parseToplevel$0();
 };
 
 $._Base64__encode = function(data) {
@@ -12681,10 +12686,6 @@ $._rotl32 = function(val, shift) {
   return $.or($.and($.shl(val, mod_shift), 4294967295), $.shr($.and(val, 4294967295), 32 - mod_shift));
 };
 
-$.JSON_parse = function(json) {
-  return $._JsonParser$(json).parseToplevel$0();
-};
-
 $.JsonUnsupportedObjectError$ = function(unsupportedObject) {
   return new $.JsonUnsupportedObjectError(unsupportedObject, null);
 };
@@ -12802,10 +12803,6 @@ $._Timer$ = function(milliSeconds, callback) {
   return t1;
 };
 
-$.stringToCodepoints = function(str) {
-  return $._utf16CodeUnitsToCodepoints($.getInterceptor$JSString(str).get$charCodes(str), 0, null, 65533);
-};
-
 $._StringEncoders_encoder = function(encoding) {
   if ($.eqB(encoding, $.CONSTANT17))
     return $._UTF8Encoder$();
@@ -12819,6 +12816,10 @@ $._StringEncoders_encoder = function(encoding) {
     return $._UTF8Encoder$();
   } else
     throw $.$$throw($.StreamException$("Unsupported encoding " + $.S(encoding.get$name())));
+};
+
+$.stringToCodepoints = function(str) {
+  return $._utf16CodeUnitsToCodepoints($.getInterceptor$JSString(str).get$charCodes(str), 0, null, 65533);
 };
 
 $._JsonParser$ = function(json) {
@@ -13205,11 +13206,6 @@ $.Map_Map = function(K, V) {
   return $._HashMapImpl$(K, V);
 };
 
-$.Uri$fromString = function(uri) {
-  var t1 = $.get$Uri__splitRe().firstMatch$1(uri);
-  return new $.Uri($.Uri__emptyIfNull($.index(t1, 1)), $.Uri__emptyIfNull($.index(t1, 2)), $.Uri__emptyIfNull($.index(t1, 3)), $.Uri__parseIntOrZero($.index(t1, 4)), $.Uri__emptyIfNull($.index(t1, 5)), $.Uri__emptyIfNull($.index(t1, 6)), $.Uri__emptyIfNull($.index(t1, 7)));
-};
-
 $._WebSocketProtocolProcessor$ = function() {
   var t1 = new $._WebSocketProtocolProcessor(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
   t1._WebSocketProtocolProcessor$0();
@@ -13219,6 +13215,12 @@ $._WebSocketProtocolProcessor$ = function() {
 $._HttpResponse$ = function(httpConnection) {
   var t1 = new $._HttpResponse(200, null, null, null, 0, false, httpConnection, null, null, "1.1", -1, 0);
   t1._HttpResponse$1(httpConnection);
+  return t1;
+};
+
+$._Manager$ = function() {
+  var t1 = new $._Manager(0, 0, 1, null, null, null, null, null, null, null, null, null);
+  t1._Manager$0();
   return t1;
 };
 
@@ -13251,12 +13253,20 @@ $._StringDecoders_decoder = function(encoding) {
     throw $.$$throw($.StreamException$("Unsupported encoding " + $.S(encoding.name)));
 };
 
+$.Uri__emptyIfNull = function(val) {
+  return !(val == null) ? val : "";
+};
+
 $.int_parse = function(source) {
   return $.Primitives_parseInt(source);
 };
 
 $.UnimplementedError$ = function(message) {
   return new $.UnimplementedError(message);
+};
+
+$._MatchImplementation$ = function(pattern, str, start, end, _groups) {
+  return new $._MatchImplementation(pattern, str, start, end, _groups);
 };
 
 $._JsSerializer$ = function() {
@@ -13311,14 +13321,14 @@ $._WindowsCodePageDecoder$ = function() {
   return new $._WindowsCodePageDecoder(t1, 0, t2, 0, $.Queue_Queue(), 0, 0, -1, null, 10, 13);
 };
 
+$.DecoderException$ = function(message) {
+  return new $.DecoderException(message);
+};
+
 $._FileOutputStream$ = function(name$, mode) {
   var t1 = new $._FileOutputStream(null, false, false, 0, null, null, null, null);
   t1._FileOutputStream$2(name$, mode);
   return t1;
-};
-
-$.DecoderException$ = function(message) {
-  return new $.DecoderException(message);
 };
 
 $._ListOutputStream$ = function() {
@@ -13341,12 +13351,6 @@ $._DoubleLinkedQueueEntrySentinel$ = function() {
 $.DoubleLinkedQueueEntry$ = function(e) {
   var t1 = new $.DoubleLinkedQueueEntry(null, null, null);
   t1.DoubleLinkedQueueEntry$1(e);
-  return t1;
-};
-
-$._BufferingSendPort$ = function(isolateId, _futurePort) {
-  var t1 = new $._BufferingSendPort($._BufferingSendPort__idCount, null, _futurePort, [], isolateId);
-  t1._BufferingSendPort$2(isolateId, _futurePort);
   return t1;
 };
 
@@ -13376,21 +13380,23 @@ $._NativeJsSendPort$ = function(_receivePort, isolateId) {
   return new $._NativeJsSendPort(_receivePort, isolateId);
 };
 
-$._MatchImplementation$ = function(pattern, str, start, end, _groups) {
-  return new $._MatchImplementation(pattern, str, start, end, _groups);
+$._JsVisitedMap$ = function() {
+  return new $._JsVisitedMap(null);
 };
 
 $.double_parse = function(source) {
   return $.Primitives_parseDouble(source);
 };
 
-$._JsVisitedMap$ = function() {
-  return new $._JsVisitedMap(null);
-};
-
 $.RequestHandler$ = function(basePath) {
   var t1 = new $.RequestHandler($.Set_Set('$.WebSocketConnection'));
   t1.RequestHandler$1(basePath);
+  return t1;
+};
+
+$._BufferingSendPort$ = function(isolateId, _futurePort) {
+  var t1 = new $._BufferingSendPort($._BufferingSendPort__idCount, null, _futurePort, [], isolateId);
+  t1._BufferingSendPort$2(isolateId, _futurePort);
   return t1;
 };
 
@@ -13437,10 +13443,6 @@ $._ReceivePortImpl$ = function() {
   return t1;
 };
 
-$._EventLoop$ = function() {
-  return new $._EventLoop($.Queue_Queue());
-};
-
 $._MainManagerStub$ = function() {
   return new $._MainManagerStub();
 };
@@ -13450,6 +13452,10 @@ $._PendingSendPortFinder$ = function() {
   t1 = new $._PendingSendPortFinder([], t1);
   t1._PendingSendPortFinder$0();
   return t1;
+};
+
+$._EventLoop$ = function() {
+  return new $._EventLoop($.Queue_Queue());
 };
 
 $.Futures_wait = function(futures) {
@@ -13476,14 +13482,9 @@ $._IsolateEvent$ = function(isolate, fn, message) {
   return new $._IsolateEvent(isolate, fn, message);
 };
 
-$._Manager$ = function() {
-  var t1 = new $._Manager(0, 0, 1, null, null, null, null, null, null, null, null, null);
-  t1._Manager$0();
-  return t1;
-};
-
-$.Uri__emptyIfNull = function(val) {
-  return !(val == null) ? val : "";
+$.Uri$fromString = function(uri) {
+  var t1 = $.get$Uri__splitRe().firstMatch$1(uri);
+  return new $.Uri($.Uri__emptyIfNull($.index(t1, 1)), $.Uri__emptyIfNull($.index(t1, 2)), $.Uri__emptyIfNull($.index(t1, 3)), $.Uri__parseIntOrZero($.index(t1, 4)), $.Uri__emptyIfNull($.index(t1, 5)), $.Uri__emptyIfNull($.index(t1, 6)), $.Uri__emptyIfNull($.index(t1, 7)));
 };
 
 $._Cookie$ = function(name$, value) {
@@ -13799,10 +13800,6 @@ $.Primitives_getDay = function(receiver) {
   return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCDate() + 0) : ($.Primitives_lazyAsJsDate(receiver).getDate() + 0);
 };
 
-$.Primitives_getYear = function(receiver) {
-  return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCFullYear() + 0) : ($.Primitives_lazyAsJsDate(receiver).getFullYear() + 0);
-};
-
 $.Primitives_getMonth = function(receiver) {
   return receiver.isUtc === true ? $.Primitives_lazyAsJsDate(receiver).getUTCMonth() + 1 : $.Primitives_lazyAsJsDate(receiver).getMonth() + 1;
 };
@@ -13813,8 +13810,8 @@ $.Primitives_lazyAsJsDate = function(receiver) {
   return receiver.date;
 };
 
-$.Primitives_getMilliseconds = function(receiver) {
-  return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCMilliseconds() + 0) : ($.Primitives_lazyAsJsDate(receiver).getMilliseconds() + 0);
+$.Primitives_getYear = function(receiver) {
+  return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCFullYear() + 0) : ($.Primitives_lazyAsJsDate(receiver).getFullYear() + 0);
 };
 
 $.Primitives_getWeekday = function(receiver) {
@@ -13826,12 +13823,27 @@ $.Primitives_getSeconds = function(receiver) {
   return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCSeconds() + 0) : ($.Primitives_lazyAsJsDate(receiver).getSeconds() + 0);
 };
 
-$.Primitives_getHours = function(receiver) {
-  return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCHours() + 0) : ($.Primitives_lazyAsJsDate(receiver).getHours() + 0);
+$.Primitives_getMilliseconds = function(receiver) {
+  return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCMilliseconds() + 0) : ($.Primitives_lazyAsJsDate(receiver).getMilliseconds() + 0);
 };
 
 $.Primitives_getMinutes = function(receiver) {
   return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCMinutes() + 0) : ($.Primitives_lazyAsJsDate(receiver).getMinutes() + 0);
+};
+
+$.Primitives_parseDouble = function(string) {
+  var result;
+  $.checkString(string);
+  if (!/^\s*(?:NaN|[+-]?(?:Infinity|(?:\.\d+|\d+(?:\.\d+)?)(?:[eE][+-]?\d+)?))\s*$/.test(string))
+    throw $.$$throw($.FormatException$(string));
+  result = parseFloat(string);
+  if ($.CONSTANT2.get$isNaN(result) === true && !$.eqB(string, "NaN"))
+    throw $.$$throw($.FormatException$(string));
+  return result;
+};
+
+$.Primitives_getHours = function(receiver) {
+  return receiver.isUtc === true ? ($.Primitives_lazyAsJsDate(receiver).getUTCHours() + 0) : ($.Primitives_lazyAsJsDate(receiver).getHours() + 0);
 };
 
 $.FutureAlreadyCompleteException$ = function() {
@@ -13868,17 +13880,6 @@ $.Primitives_printString = function(string) {
     return;
   }
   throw 'Unable to print message: ' + String(string);
-};
-
-$.Primitives_parseDouble = function(string) {
-  var result;
-  $.checkString(string);
-  if (!/^\s*(?:NaN|[+-]?(?:Infinity|(?:\.\d+|\d+(?:\.\d+)?)(?:[eE][+-]?\d+)?))\s*$/.test(string))
-    throw $.$$throw($.FormatException$(string));
-  result = parseFloat(string);
-  if ($.CONSTANT2.get$isNaN(result) === true && !$.eqB(string, "NaN"))
-    throw $.$$throw($.FormatException$(string));
-  return result;
 };
 
 $.RangeError$value = function(value) {
@@ -14767,7 +14768,7 @@ $._JsonParser_RBRACKET = 93;
 $.WebSocketStatus_RESERVED_1004 = 1004;
 $.WebSocketStatus_NO_STATUS_RECEIVED = 1005;
 $.WebSocketStatus_ABNORMAL_CLOSURE = 1006;
-$._JsonParser_CHAR_R = 114;
+$._JsonParser_CHAR_E = 101;
 $._JsonParser_CHAR_N = 110;
 $._JsonParser_CHAR_F = 102;
 $._JsonParser_CHAR_U = 117;
@@ -14781,7 +14782,7 @@ $._JsonParser_MINUS = 45;
 $._JsonParser_NUMBER_LITERAL = 45;
 $._JsonParser_CHAR_3 = 51;
 $._JsonParser_NULL_LITERAL = 110;
-$._JsonParser_CHAR_E = 101;
+$._JsonParser_CHAR_R = 114;
 $._JsonParser_FALSE_LITERAL = 102;
 $._JsonParser_TRUE_LITERAL = 116;
 $._JsonParser_CHAR_6 = 54;
