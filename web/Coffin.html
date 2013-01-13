@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffin Austria</title>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+    <link href="css/bootstrap.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <script id="myScript"></script>
+  </head>
+  <body data-spy="scroll" data-target=".bs-docs-sidebar" data-twttr-rendered="true">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <a class="brand" href="/" title="Coffin Austria Home">
+          <img src="img/Clipboard02.gif" alt="Dart"/>
+        </a>
+        <a class="brand" href="#">Produkte</a>
+        <a class="brand" href="#">Team</a>
+        <a class="brand" href="#">Kontakt</a>
+        <a class="brand" href="Test.html">Test</a>
+      </div
+    </div>
+    <div id="effect">
+      <div id="myCarousel" class="carousel slide">
+        <!-- Carousel items -->
+        <div class="carousel-inner" id="mainCarousel">
+        </div>
+        <!-- Carousel nav -->
+        <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+        <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+      </div>  
+    </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div>
+          <h1>Willkommen bei COFFIN AUSTRIA,</h1>
+          einem jungen und dynamischen Unternehmen. Wir bieten sowohl S&auml;rge als auch Sargzubeh&ouml;r an. Durch unser erfahrenes Team haben wir Kompetenzen in vielen Bereichen. Hervorzuheben sind hier
+          <ul id="coffinList">
+          </ul>
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span4">
+          <h2>Flexibilit&auml;t</h2>
+          W&auml;hlen Sie aus unterschiedlichen Lieferarten und statten Sie Ihre S&auml;rge mit Zubeh&ouml;r (Henkel, Kreuze, Gravuren) aus. 
+          Sie bestimmen wann Ihre Bestellung eintreffen soll.
+        </div>
+        <div class="span4">
+          <h2>Qualit&auml;t</h2>
+          Wir legen h&ouml;chsten Wert auf Qualit&auml;t. Sowohl bei der Verarbeitung unserer Produkte, welche strengste Qualit&auml;tskontrollen durchlaufen, als auch bei nachhaltiger und umweltschonender Produktion. Selbstverst&auml;ndlich k&ouml;nnen alle von uns angebotenen S&auml;rge f&uuml;r Kremationen eingesetzt werden. Je nach Modell wird Vollholz mit Aqualack oder Vollholz mit Papier-Furnier zur Fertigung verwendet.
+        </div>
+        <div class="span4">
+          <h2>Service</h2>
+          Trotz der sagenhaften Qualit&auml;t bieten wir konkurrenzf&auml;hige und individuell angepasste Preise an. 
+          Teilen Sie uns Ihre W&uuml;nsche mit - wir setzen sie um.</div>
+      </div>
+      <div class="row-fluid">
+        <div class="span12">
+          <textarea id="serverResponse" rows="10" columns="2000" disabled></textarea>
+          <button id="serverTest">serverTest</button>
+        </div>
+      </div>
+    </div>
+    
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    
+    <script type="application/dart" src="Coffin.dart"></script>
+    <script src="https://dart.googlecode.com/svn/branches/bleeding_edge/dart/client/dart.js"></script>
+  </body>
+</html>
