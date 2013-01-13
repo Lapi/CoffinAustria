@@ -1280,8 +1280,8 @@ $$.JSString = {"":"Object;",
   return receiver;
 },
  get$hashCode: function(receiver) {
-  var hash, i, hash0, hash1;
-  for (hash = 0, i = 0; i < receiver.length; ++i, hash = hash1) {
+  var i, hash, hash0, hash1;
+  for (i = 0, hash = 0; i < receiver.length; ++i, hash = hash1) {
     hash0 = 536870911 & hash + receiver.charCodeAt(i);
     hash1 = 536870911 & hash0 + ((524287 & hash0) << 10 >>> 0);
     hash1 = hash1 ^ (hash1 >> 6);
@@ -1294,45 +1294,6 @@ $$.JSString = {"":"Object;",
   return receiver.length;
 },
  is$String: true
-};
-
-$$.ServerConnection = {"":"Object;webSocket,url",
- getCarousellItems$0: function() {
-  this._sendEncodedMessage$1($.JSON_stringify($.makeLiteralMap(["name", "getCarousellItems"])));
-},
- _sendEncodedMessage$1: function(encodedMessage) {
-  var t1 = this.webSocket;
-  if (!(t1 == null) && $.eqB(t1.get$readyState(), 1))
-    this.webSocket.send$1(encodedMessage);
-  else
-    $.print("WebSocket not connected, message " + $.S(encodedMessage) + " not sent");
-},
- _init$1: function(retrySeconds) {
-  var t1, t2;
-  t1 = {};
-  t1.encounteredError_0 = false;
-  t1 = new $.ServerConnection__init_scheduleReconnect(t1, retrySeconds, this);
-  $.serverResponseWindow.displayNotice$1("Connecting to Web socket");
-  this.webSocket = $.WebSocket_WebSocket(this.url);
-  t2 = this.webSocket.get$on().get$open();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon());
-  t2 = this.webSocket.get$on().get$close();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon0(t1));
-  t2 = this.webSocket.get$on().get$close();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon1());
-  t2 = this.webSocket.get$on().get$error();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon2(t1));
-  t2 = this.webSocket.get$on().get$error();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon3());
-  t2 = this.webSocket.get$on().get$message();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon4(this));
-},
- _init$0: function() {
-  return this._init$1(2);
-},
- ServerConnection$1: function(url) {
-  this._init$0();
-}
 };
 
 $$.BodyElementEvents = {"":"ElementEvents;_ptr",
@@ -2828,6 +2789,47 @@ $$._AttributeClassSet = {"":"CssClassSet;_liblib1$_element>",
 }
 };
 
+$$.ServerConnection = {"":"Object;webSocket,url,serverResponseWindow>,carouselContent>",
+ getCarousellItems$0: function() {
+  this._sendEncodedMessage$1($.JSON_stringify($.makeLiteralMap(["name", "getCarousellItems"])));
+},
+ _sendEncodedMessage$1: function(encodedMessage) {
+  var t1 = this.webSocket;
+  if (!(t1 == null) && $.eqB(t1.get$readyState(), 1))
+    this.webSocket.send$1(encodedMessage);
+  else
+    $.print("WebSocket not connected, message " + $.S(encodedMessage) + " not sent");
+},
+ _init$1: function(retrySeconds) {
+  var t1, t2;
+  t1 = {};
+  t1.encounteredError_0 = false;
+  t1 = new $.ServerConnection__init_scheduleReconnect(t1, this, retrySeconds);
+  this.serverResponseWindow.displayNotice$1("Connecting to Web socket");
+  this.webSocket = $.WebSocket_WebSocket(this.url);
+  t2 = this.webSocket.get$on().get$open();
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon(this));
+  t2 = this.webSocket.get$on().get$close();
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon0(t1));
+  t2 = this.webSocket.get$on().get$close();
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon1(this));
+  t2 = this.webSocket.get$on().get$error();
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon2(t1));
+  t2 = this.webSocket.get$on().get$error();
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon3(this));
+  t2 = this.webSocket.get$on().get$message();
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon4(this));
+},
+ _init$0: function() {
+  return this._init$1(2);
+},
+ ServerConnection$3: function(url, srw, cc) {
+  this.serverResponseWindow = srw;
+  this.carouselContent = cc;
+  this._init$0();
+}
+};
+
 $$.ServerResponseWindow = {"":"View;elem",
  displayNotice$1: function(notice) {
   var t1, t2;
@@ -2948,21 +2950,22 @@ $$.MyScriptElement = {"":"View;elem",
 }
 };
 
-$$.ServerConnection__init_scheduleReconnect = {"":"Closure;box_0,retrySeconds_1,this_2",
+$$.ServerConnection__init_scheduleReconnect = {"":"Closure;box_0,this_1,retrySeconds_2",
  call$0: function() {
   var t1, t2, t3, t4;
-  t1 = $.serverResponseWindow;
-  t2 = this.retrySeconds_1;
-  t1.displayNotice$1("web socket closed, retrying in " + $.S(t2) + " seconds");
-  t1 = this.box_0;
-  if (t1.encounteredError_0 !== true) {
-    t3 = $.window();
-    t4 = new $.ServerConnection__init_scheduleReconnect_anon(this.this_2, t2);
-    if (typeof t2 !== 'number')
-      throw $.iae(t2);
-    t3.setTimeout$2(t4, 1000 * t2);
+  t1 = this.this_1;
+  t2 = t1.get$serverResponseWindow();
+  t3 = this.retrySeconds_2;
+  t2.displayNotice$1("web socket closed, retrying in " + $.S(t3) + " seconds");
+  t2 = this.box_0;
+  if (t2.encounteredError_0 !== true) {
+    t4 = $.window();
+    t1 = new $.ServerConnection__init_scheduleReconnect_anon(t1, t3);
+    if (typeof t3 !== 'number')
+      throw $.iae(t3);
+    t4.setTimeout$2(t1, 1000 * t3);
   }
-  t1.encounteredError_0 = true;
+  t2.encounteredError_0 = true;
 }
 };
 
@@ -2972,44 +2975,45 @@ $$.ServerConnection__init_scheduleReconnect_anon = {"":"Closure;this_3,retrySeco
 }
 };
 
-$$.ServerConnection__init_anon = {"":"Closure;",
+$$.ServerConnection__init_anon = {"":"Closure;this_5",
  call$1: function(e) {
-  $.serverResponseWindow.displayNotice$1("Connected");
-  $.serverConnection.getCarousellItems$0();
+  var t1 = this.this_5;
+  t1.get$serverResponseWindow().displayNotice$1("Connected");
+  t1.getCarousellItems$0();
 }
 };
 
-$$.ServerConnection__init_anon0 = {"":"Closure;scheduleReconnect_5",
- call$1: function(e) {
-  return this.scheduleReconnect_5.call$0();
-}
-};
-
-$$.ServerConnection__init_anon1 = {"":"Closure;",
- call$1: function(e) {
-  $.serverResponseWindow.displayNotice$1("web socket closed");
-}
-};
-
-$$.ServerConnection__init_anon2 = {"":"Closure;scheduleReconnect_6",
+$$.ServerConnection__init_anon0 = {"":"Closure;scheduleReconnect_6",
  call$1: function(e) {
   return this.scheduleReconnect_6.call$0();
 }
 };
 
-$$.ServerConnection__init_anon3 = {"":"Closure;",
+$$.ServerConnection__init_anon1 = {"":"Closure;this_7",
  call$1: function(e) {
-  $.serverResponseWindow.displayNotice$1("Error connecting to ws");
+  this.this_7.get$serverResponseWindow().displayNotice$1("web socket closed");
 }
 };
 
-$$.ServerConnection__init_anon4 = {"":"Closure;this_7",
+$$.ServerConnection__init_anon2 = {"":"Closure;scheduleReconnect_8",
+ call$1: function(e) {
+  return this.scheduleReconnect_8.call$0();
+}
+};
+
+$$.ServerConnection__init_anon3 = {"":"Closure;this_9",
+ call$1: function(e) {
+  this.this_9.get$serverResponseWindow().displayNotice$1("Error connecting to ws");
+}
+};
+
+$$.ServerConnection__init_anon4 = {"":"Closure;this_10",
  call$1: function(e) {
   var transferObject;
   $.print("received message " + $.S(e.get$data()));
   transferObject = $.JSON_parse(e.get$data());
   if ($.eqB($.index(transferObject, "Name"), "getCarousellItems"))
-    $.carouselContent.compose$1(transferObject);
+    this.this_10.get$carouselContent().compose$1(transferObject);
 }
 };
 
@@ -3061,10 +3065,10 @@ $$.NoSuchMethodError_toString_anon = {"":"Closure;box_0",
 }
 };
 
-$$.convertNativeToDart_AcceptStructuredClone_findSlot = {"":"Closure;copies_0,values_1",
+$$.convertNativeToDart_AcceptStructuredClone_findSlot = {"":"Closure;values_0,copies_1",
  call$1: function(value) {
   var t1, t3, length$, i, t2;
-  t1 = this.values_1;
+  t1 = this.values_0;
   if (typeof t1 !== 'string' && (typeof t1 !== 'object' || t1 === null || t1.constructor !== Array && !t1.is$JavaScriptIndexingBehavior()))
     return this.call$1$bailout0(1, value, t1);
   t3 = $.getInterceptor$JSStringJSArray(t1);
@@ -3075,7 +3079,7 @@ $$.convertNativeToDart_AcceptStructuredClone_findSlot = {"":"Closure;copies_0,va
       return i;
   }
   t3.add$1(t1, value);
-  t1 = this.copies_0;
+  t1 = this.copies_1;
   $.getInterceptor$JSArray(t1).add$1(t1, null);
   return length$;
 },
@@ -3093,7 +3097,7 @@ $$.convertNativeToDart_AcceptStructuredClone_findSlot = {"":"Closure;copies_0,va
   }
   switch (state0) {
     case 0:
-      t1 = this.values_1;
+      t1 = this.values_0;
     case 1:
       state0 = 0;
       length$ = $.getInterceptor$JSStringJSArray(t1).get$length(t1);
@@ -3106,7 +3110,7 @@ $$.convertNativeToDart_AcceptStructuredClone_findSlot = {"":"Closure;copies_0,va
           return i;
       }
       $.getInterceptor$JSArray(t1).add$1(t1, value);
-      t1 = this.copies_0;
+      t1 = this.copies_1;
       $.getInterceptor$JSArray(t1).add$1(t1, null);
       return length$;
   }
@@ -3288,15 +3292,15 @@ $$.invokeClosure_anon = {"":"Closure;closure_0",
 }
 };
 
-$$.invokeClosure_anon0 = {"":"Closure;closure_1,arg1_2",
+$$.invokeClosure_anon0 = {"":"Closure;arg1_1,closure_2",
  call$0: function() {
-  return this.closure_1.call$1(this.arg1_2);
+  return this.closure_2.call$1(this.arg1_1);
 }
 };
 
-$$.invokeClosure_anon1 = {"":"Closure;closure_3,arg2_4,arg1_5",
+$$.invokeClosure_anon1 = {"":"Closure;arg1_3,closure_4,arg2_5",
  call$0: function() {
-  return this.closure_3.call$2(this.arg1_5, this.arg2_4);
+  return this.closure_4.call$2(this.arg1_3, this.arg2_5);
 }
 };
 
@@ -3418,14 +3422,8 @@ $.ltB = function(a, b) {
   return typeof a === 'number' && typeof b === 'number' ? a < b : $.lt$slow(a, b) === true;
 };
 
-$.index = function(a, index) {
-  var key;
-  if (typeof a == "string" || a.constructor === Array) {
-    key = index >>> 0;
-    if (key === index && key < a.length)
-      return a[key];
-  }
-  return $.index$slow(a, index);
+$.leB = function(a, b) {
+  return typeof a === 'number' && typeof b === 'number' ? a <= b : $.le$slow(a, b) === true;
 };
 
 $.indexSet = function(a, index, value) {
@@ -3459,10 +3457,14 @@ $.add$slow = function(a, b) {
   return a.operator$add$1(b);
 };
 
-$.mul$slow = function(a, b) {
-  if ($.checkNumbers(a, b))
-    return a * b;
-  return a.operator$mul$1(b);
+$.index = function(a, index) {
+  var key;
+  if (typeof a == "string" || a.constructor === Array) {
+    key = index >>> 0;
+    if (key === index && key < a.length)
+      return a[key];
+  }
+  return $.index$slow(a, index);
 };
 
 $.sub$slow = function(a, b) {
@@ -3471,10 +3473,10 @@ $.sub$slow = function(a, b) {
   return a.operator$sub$1(b);
 };
 
-$.tdiv = function(a, b) {
+$.mul$slow = function(a, b) {
   if ($.checkNumbers(a, b))
-    return $.CONSTANT1.truncate$0(a / b);
-  return a.operator$tdiv$1(b);
+    return a * b;
+  return a.operator$mul$1(b);
 };
 
 $.eq = function(a, b) {
@@ -3499,6 +3501,12 @@ $.eqB = function(a, b) {
   return a === b;
 };
 
+$.tdiv = function(a, b) {
+  if ($.checkNumbers(a, b))
+    return $.CONSTANT1.truncate$0(a / b);
+  return a.operator$tdiv$1(b);
+};
+
 $.gt$slow = function(a, b) {
   if ($.checkNumbers(a, b))
     return a > b;
@@ -3517,8 +3525,16 @@ $.lt$slow = function(a, b) {
   return a.operator$lt$1(b);
 };
 
-$.DivElement_DivElement = function() {
-  return $.document().$$dom_createElement$1("div");
+$.and = function(a, b) {
+  if ($.checkNumbers(a, b))
+    return (a & b) >>> 0;
+  return a.operator$and$1(b);
+};
+
+$.le$slow = function(a, b) {
+  if ($.checkNumbers(a, b))
+    return a <= b;
+  return a.operator$le$1(b);
 };
 
 $.index$slow = function(a, index) {
@@ -3571,16 +3587,12 @@ $.S = function(value) {
   return res;
 };
 
-$.ioore = function(index) {
-  throw $.$$throw($.RangeError$value(index));
-};
-
-$.leB = function(a, b) {
-  return typeof a === 'number' && typeof b === 'number' ? a <= b : $.le$slow(a, b) === true;
-};
-
 $.iae = function(argument) {
   throw $.$$throw($.ArgumentError$(argument));
+};
+
+$.ioore = function(index) {
+  throw $.$$throw($.RangeError$value(index));
 };
 
 $.checkNull = function(object) {
@@ -3595,10 +3607,20 @@ $.checkNum = function(value) {
   return value;
 };
 
-$.and = function(a, b) {
-  if ($.checkNumbers(a, b))
-    return (a & b) >>> 0;
-  return a.operator$and$1(b);
+$.shr = function(a, b) {
+  if ($.checkNumbers(a, b)) {
+    if (b < 0)
+      throw $.$$throw($.ArgumentError$(b));
+    if (a > 0) {
+      if (b > 31)
+        return 0;
+      return a >>> b;
+    }
+    if (b > 31)
+      b = 31;
+    return (a >> b) >>> 0;
+  }
+  return a.operator$shr$1(b);
 };
 
 $.checkString = function(value) {
@@ -3671,17 +3693,6 @@ $.makeLiteralMap = function(keyValuePairs) {
   return result;
 };
 
-$.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
-  if ($.eqB(numberOfArguments, 0))
-    return new $.invokeClosure_anon(closure).call$0();
-  else if ($.eqB(numberOfArguments, 1))
-    return new $.invokeClosure_anon0(closure, arg1).call$0();
-  else if ($.eqB(numberOfArguments, 2))
-    return new $.invokeClosure_anon1(closure, arg2, arg1).call$0();
-  else
-    throw $.$$throw($.Exception_Exception("Unsupported number of arguments for wrapped closure"));
-};
-
 $.convertDartClosureToJS = function(closure, arity) {
   var function$;
   if (closure == null)
@@ -3696,38 +3707,31 @@ $.convertDartClosureToJS = function(closure, arity) {
   return function$;
 };
 
+$.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
+  if ($.eqB(numberOfArguments, 0))
+    return new $.invokeClosure_anon(closure).call$0();
+  else if ($.eqB(numberOfArguments, 1))
+    return new $.invokeClosure_anon0(arg1, closure).call$0();
+  else if ($.eqB(numberOfArguments, 2))
+    return new $.invokeClosure_anon1(arg1, closure, arg2).call$0();
+  else
+    throw $.$$throw($.Exception_Exception("Unsupported number of arguments for wrapped closure"));
+};
+
 $._ElementCssClassSet$ = function(_element) {
   return new $._ElementCssClassSet(_element);
 };
 
-$.le$slow = function(a, b) {
-  if ($.checkNumbers(a, b))
-    return a <= b;
-  return a.operator$le$1(b);
-};
-
-$.shr = function(a, b) {
-  if ($.checkNumbers(a, b)) {
-    if (b < 0)
-      throw $.$$throw($.ArgumentError$(b));
-    if (a > 0) {
-      if (b > 31)
-        return 0;
-      return a >>> b;
-    }
-    if (b > 31)
-      b = 31;
-    return (a >> b) >>> 0;
-  }
-  return a.operator$shr$1(b);
-};
-
-$.InputElementEvents$ = function(_ptr) {
-  return new $.InputElementEvents(_ptr);
+$.DivElement_DivElement = function() {
+  return $.document().$$dom_createElement$1("div");
 };
 
 $.LocalWindowEvents$ = function(_ptr) {
   return new $.LocalWindowEvents(_ptr);
+};
+
+$.InputElementEvents$ = function(_ptr) {
+  return new $.InputElementEvents(_ptr);
 };
 
 $.throwCyclicInit = function(staticName) {
@@ -3920,21 +3924,6 @@ $.dynamicBind = function(obj, name$, methods, arguments$) {
   return method.apply(obj, arguments$);
 };
 
-$.dynamicFunction = function(name$) {
-  var f, methods, dartMethod, bind;
-  f = Object.prototype[name$];
-  if (!(f == null) && !!f.methods)
-    return f.methods;
-  methods = {};
-  dartMethod = Object.getPrototypeOf($.CONSTANT5)[name$];
-  if (!(dartMethod == null))
-    methods["Object"] = dartMethod;
-  bind = function() {return $.dynamicBind.call$4(this, name$, methods, Array.prototype.slice.call(arguments));};
-  bind.methods = methods;
-  $.defineProperty(Object.prototype, name$, bind);
-  return methods;
-};
-
 $.dynamicBindLookup = function(hasOwnPropertyFunction, tag, methods) {
   var method, i, entry;
   method = $.lookupDynamicClass(hasOwnPropertyFunction, methods, tag);
@@ -3962,8 +3951,38 @@ $._dynamicMetadata0 = function() {
   return $dynamicMetadata;
 };
 
+$.dynamicFunction = function(name$) {
+  var f, methods, dartMethod, bind;
+  f = Object.prototype[name$];
+  if (!(f == null) && !!f.methods)
+    return f.methods;
+  methods = {};
+  dartMethod = Object.getPrototypeOf($.CONSTANT5)[name$];
+  if (!(dartMethod == null))
+    methods["Object"] = dartMethod;
+  bind = function() {return $.dynamicBind.call$4(this, name$, methods, Array.prototype.slice.call(arguments));};
+  bind.methods = methods;
+  $.defineProperty(Object.prototype, name$, bind);
+  return methods;
+};
+
 $._dynamicMetadata = function(table) {
   $dynamicMetadata = table;
+};
+
+$.buildDynamicMetadata = function(inputTable) {
+  var result, i, tag, tags, set, tagNames, j;
+  result = [];
+  for (i = 0; i < inputTable.length; ++i) {
+    tag = inputTable[i][0];
+    tags = inputTable[i][1];
+    set = {};
+    tagNames = tags.split("|");
+    for (j = 0; j < tagNames.length; ++j)
+      set[tagNames[j]] = true;
+    result.push($.MetaInfo$(tag, tags, set));
+  }
+  return result;
 };
 
 $.dynamicSetMetadata = function(inputTable) {
@@ -3985,10 +4004,6 @@ $.regExpTest = function(regExp, str) {
 $.regExpGetNative = function(regExp) {
   var r = regExp._re;
   return r == null ? regExp._re = $.regExpMakeNative(regExp, false) : r;
-};
-
-$.IllegalJSRegExpException$ = function(_pattern, _errmsg) {
-  return new $.IllegalJSRegExpException(_pattern, _errmsg);
 };
 
 $.regExpMakeNative = function(regExp, global, exception) {
@@ -4056,6 +4071,10 @@ $.stringContainsUnchecked = function(receiver, other, startIndex) {
   }
 };
 
+$.stringReplaceJS = function(receiver, replacer, to) {
+  return receiver.replace(replacer, to.replace('$', '$$$$'));
+};
+
 $.stringReplaceAllUnchecked = function(receiver, from, to) {
   var result, length$, t1, i;
   if (from === "")
@@ -4082,8 +4101,8 @@ $.stringJoinUnchecked = function(array, separator) {
   return array.join(separator);
 };
 
-$.stringReplaceJS = function(receiver, replacer, to) {
-  return receiver.replace(replacer, to.replace('$', '$$$$'));
+$.IllegalJSRegExpException$ = function(_pattern, _errmsg) {
+  return new $.IllegalJSRegExpException(_pattern, _errmsg);
 };
 
 $._HashSetImpl$ = function() {
@@ -4092,25 +4111,14 @@ $._HashSetImpl$ = function() {
   return t1;
 };
 
-$.buildDynamicMetadata = function(inputTable) {
-  var result, i, tag, tags, set, tagNames, j;
-  result = [];
-  for (i = 0; i < inputTable.length; ++i) {
-    tag = inputTable[i][0];
-    tags = inputTable[i][1];
-    set = {};
-    tagNames = tags.split("|");
-    for (j = 0; j < tagNames.length; ++j)
-      set[tagNames[j]] = true;
-    result.push($.MetaInfo$(tag, tags, set));
-  }
-  return result;
-};
-
 $._HashMapImpl$ = function() {
   var t1 = new $._HashMapImpl(null, null, null, null, null);
   t1._HashMapImpl$0();
   return t1;
+};
+
+$.print = function(object) {
+  $.Primitives_printString(object);
 };
 
 $._HashMapImpl__computeLoadLimit = function(capacity) {
@@ -4119,10 +4127,6 @@ $._HashMapImpl__computeLoadLimit = function(capacity) {
 
 $._HashMapImpl__nextProbe = function(currentProbe, numberOfProbes, length$) {
   return $.and($.add(currentProbe, numberOfProbes), $.sub(length$, 1));
-};
-
-$.print = function(object) {
-  $.Primitives_printString(object);
 };
 
 $.MediaElementEvents$ = function(_ptr) {
@@ -4158,7 +4162,7 @@ $.main = function() {
   script = $.query("#myScript");
   $.serverResponseWindow = $.ServerResponseWindow$(serverResponseElem);
   $.carouselContent = $.CarouselContent$(carousell);
-  $.serverConnection = $.ServerConnection$("ws://127.0.0.1:1337/ws");
+  $.serverConnection = $.ServerConnection$("ws://127.0.0.1:1337/ws", $.serverResponseWindow, $.carouselContent);
   $.myScriptElement = $.MyScriptElement$(script);
   $.myScriptElement.addCarousellFade$0();
 };
@@ -4191,12 +4195,6 @@ $._ElementAttributeMap$ = function(element) {
   return new $._ElementAttributeMap(element);
 };
 
-$.ServerConnection$ = function(url) {
-  var t1 = new $.ServerConnection(null, url);
-  t1.ServerConnection$1(url);
-  return t1;
-};
-
 $._browserPrefix = function() {
   if ($._cachedBrowserPrefix == null)
     if ($._Device_isFirefox() === true)
@@ -4208,6 +4206,12 @@ $._browserPrefix = function() {
     else
       $._cachedBrowserPrefix = "-webkit-";
   return $._cachedBrowserPrefix;
+};
+
+$.ServerConnection$ = function(url, srw, cc) {
+  var t1 = new $.ServerConnection(null, url, null, null);
+  t1.ServerConnection$3(url, srw, cc);
+  return t1;
 };
 
 $.MyScriptElement$ = function(elem) {
@@ -4242,6 +4246,10 @@ $.MetaInfo$ = function(_tag, _tags, _set) {
 
 $.ListIterator$ = function(list) {
   return new $.ListIterator(0, list);
+};
+
+$._JsonStringifier$ = function(sb) {
+  return new $._JsonStringifier(sb, []);
 };
 
 $._JsonStringifier_stringify = function(object) {
@@ -4333,10 +4341,6 @@ $._JsonStringifier_escape = function(sb, s) {
   }
   t1 = $.getInterceptor$JSArray(sb);
   t1.add$1(sb, needsEscape ? $.String_String$fromCharCodes(charCodes) : s);
-};
-
-$._JsonStringifier$ = function(sb) {
-  return new $._JsonStringifier(sb, []);
 };
 
 $.Collections_contains = function(iterable, element) {
@@ -4473,10 +4477,6 @@ $.JSSyntaxRegExp$ = function(pattern, ignoreCase, multiLine) {
   return new $.JSSyntaxRegExp(pattern, multiLine, ignoreCase);
 };
 
-$._AllMatchesIterable$ = function(_re, _str) {
-  return new $._AllMatchesIterable(_re, _str);
-};
-
 $.JSSyntaxRegExp__globalVersionOf = function(other) {
   var t1, t2, re;
   t1 = other.get$pattern();
@@ -4486,12 +4486,16 @@ $.JSSyntaxRegExp__globalVersionOf = function(other) {
   return re;
 };
 
+$._AllMatchesIterator$ = function(re, _str) {
+  return new $._AllMatchesIterator($.JSSyntaxRegExp__globalVersionOf(re), _str, null, false);
+};
+
 $.RegExp_RegExp = function(pattern, ignoreCase, multiLine) {
   return $.JSSyntaxRegExp$(pattern, ignoreCase, multiLine);
 };
 
-$._AllMatchesIterator$ = function(re, _str) {
-  return new $._AllMatchesIterator($.JSSyntaxRegExp__globalVersionOf(re), _str, null, false);
+$._AllMatchesIterable$ = function(_re, _str) {
+  return new $._AllMatchesIterable(_re, _str);
 };
 
 $.StringMatch$ = function(start, str, pattern) {
@@ -4582,10 +4586,21 @@ $.Primitives_newList = function(length$) {
   return result;
 };
 
+$.convertNativeToDart_SerializedScriptValue = function(object) {
+  return $.convertNativeToDart_AcceptStructuredClone(object, true);
+};
+
+$.convertNativeToDart_AcceptStructuredClone = function(object, mustCopy) {
+  var values, copies;
+  values = [];
+  copies = [];
+  return new $.convertNativeToDart_AcceptStructuredClone_walk(new $.convertNativeToDart_AcceptStructuredClone_findSlot(values, copies), new $.convertNativeToDart_AcceptStructuredClone_readSlot(copies), new $.convertNativeToDart_AcceptStructuredClone_writeSlot(copies), mustCopy).call$1(object);
+};
+
 $.Primitives__fromCharCodeApply = function(array) {
-  var end, t1, result, i, subarray, t2;
+  var end, t1, i, result, subarray, t2;
   end = array.length;
-  for (t1 = end <= 500, result = "", i = 0; i < end; i += 500) {
+  for (t1 = end <= 500, i = 0, result = ""; i < end; i += 500) {
     if (t1)
       subarray = array;
     else {
@@ -4632,17 +4647,6 @@ $.Primitives_stringFromCharCodes = function(charCodes) {
 
 $.NoSuchMethodError$ = function(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames) {
   return new $.NoSuchMethodError(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames);
-};
-
-$.convertNativeToDart_SerializedScriptValue = function(object) {
-  return $.convertNativeToDart_AcceptStructuredClone(object, true);
-};
-
-$.convertNativeToDart_AcceptStructuredClone = function(object, mustCopy) {
-  var values, copies;
-  values = [];
-  copies = [];
-  return new $.convertNativeToDart_AcceptStructuredClone_walk(new $.convertNativeToDart_AcceptStructuredClone_findSlot(copies, values), new $.convertNativeToDart_AcceptStructuredClone_readSlot(copies), new $.convertNativeToDart_AcceptStructuredClone_writeSlot(copies), mustCopy).call$1(object);
 };
 
 $.StringBuffer_StringBuffer = function(content$) {
@@ -4902,12 +4906,12 @@ $.FilteredElementList$ = function(node) {
   return new $.FilteredElementList(node, node.get$nodes());
 };
 
-$._FrozenElementListIterator$ = function(_list) {
-  return new $._FrozenElementListIterator(_list, 0);
-};
-
 $._AttributeClassSet$ = function(_element) {
   return new $._AttributeClassSet(_element);
+};
+
+$._FrozenElementListIterator$ = function(_list) {
+  return new $._FrozenElementListIterator(_list, 0);
 };
 
 $.FrameSetElementEvents$ = function(_ptr) {
@@ -5045,9 +5049,16 @@ $.CONSTANT0 = new Isolate.$isolateProperties.NullThrownError();
 $.CONSTANT4 = new Isolate.$isolateProperties._DeletedKeySentinel();
 $.CONSTANT = new Isolate.$isolateProperties.JSArray();
 $.CONSTANT1 = new Isolate.$isolateProperties.JSNumber();
-$._cachedBrowserPrefix = null;
+$.Primitives_DOLLAR_CHAR_VALUE = 36;
+$._JsonParser_STRING_LITERAL = 34;
+$._JsonParser_NUMBER_LITERAL = 45;
+$._JsonParser_NULL_LITERAL = 110;
+$._JsonParser_FALSE_LITERAL = 102;
+$._JsonParser_TRUE_LITERAL = 116;
+$._JsonParser_CHAR_U = 117;
 $._JsonParser_WHITESPACE = 32;
 $._JsonParser_LAST_ASCII = 125;
+$._cachedBrowserPrefix = null;
 $._JsonParser_NULL_STRING = "null";
 $._JsonParser_TRUE_STRING = "true";
 $._JsonParser_FALSE_STRING = "false";
@@ -5056,26 +5067,26 @@ $._HashMapImpl__DELETED_KEY = Isolate.$isolateProperties.CONSTANT4;
 $._HashMapImpl__INITIAL_CAPACITY = 8;
 $.WebSocket_OPEN = 1;
 $._getTypeNameOf = null;
-$._JsonParser_BACKSPACE = 8;
-$._JsonParser_TAB = 9;
-$._JsonParser_NEW_LINE = 10;
-$._JsonParser_FORM_FEED = 12;
-$._JsonParser_CARRIAGE_RETURN = 13;
 $.serverConnection = null;
 $.serverResponseWindow = null;
-$._JsonParser_SPACE = 32;
+$._JsonParser_BACKSPACE = 8;
 $.carouselContent = null;
+$._JsonParser_TAB = 9;
 $.myScriptElement = null;
+$._JsonParser_NEW_LINE = 10;
+$._JsonParser_FORM_FEED = 12;
+$.MIRROR_OPT_IN_MESSAGE = "\nThis program is using an experimental feature called \"mirrors\".  As\ncurrently implemented, mirrors do not work with minification, and will\ncause spurious errors depending on how code was optimized.\n\nThe authors of this program are aware of these problems and have\ndecided the thrill of using an experimental feature is outweighing the\nrisks.  Furthermore, the authors of this program understand that\nlong-term, to fix the problems mentioned above, mirrors may have\nnegative impact on size and performance of Dart programs compiled to\nJavaScript.\n";
+$._JsonParser_CARRIAGE_RETURN = 13;
+$._JsonParser_SPACE = 32;
 $._JsonParser_QUOTE = 34;
+$._JsonParser_PLUS = 43;
 $._JsonParser_COMMA = 44;
 $._JsonParser_MINUS = 45;
 $._JsonParser_DOT = 46;
 $._JsonParser_SLASH = 47;
-$.MIRROR_OPT_IN_MESSAGE = "\nThis program is using an experimental feature called \"mirrors\".  As\ncurrently implemented, mirrors do not work with minification, and will\ncause spurious errors depending on how code was optimized.\n\nThe authors of this program are aware of these problems and have\ndecided the thrill of using an experimental feature is outweighing the\nrisks.  Furthermore, the authors of this program understand that\nlong-term, to fix the problems mentioned above, mirrors may have\nnegative impact on size and performance of Dart programs compiled to\nJavaScript.\n";
 $._JsonParser_CHAR_0 = 48;
 $._JsonParser_CHAR_1 = 49;
 $._JsonParser_CHAR_2 = 50;
-$._JsonParser_PLUS = 43;
 $._JsonParser_CHAR_3 = 51;
 $._JsonParser_CHAR_4 = 52;
 $._JsonParser_CHAR_5 = 53;
@@ -5092,19 +5103,12 @@ $._JsonParser_CHAR_B = 98;
 $._JsonParser_CHAR_E = 101;
 $._JsonParser_CHAR_F = 102;
 $._JsonParser_CHAR_N = 110;
-$.Primitives_hashCodeSeed = 0;
 $._JsonParser_CHAR_T = 116;
-$._JsonParser_CHAR_U = 117;
+$.Primitives_mirrorsEnabled = false;
+$.Primitives_hashCodeSeed = 0;
+$._JsonParser_CHAR_R = 114;
 $._JsonParser_LBRACE = 123;
 $._JsonParser_RBRACE = 125;
-$.Primitives_DOLLAR_CHAR_VALUE = 36;
-$._JsonParser_STRING_LITERAL = 34;
-$._JsonParser_NUMBER_LITERAL = 45;
-$.Primitives_mirrorsEnabled = false;
-$._JsonParser_NULL_LITERAL = 110;
-$._JsonParser_CHAR_R = 114;
-$._JsonParser_FALSE_LITERAL = 102;
-$._JsonParser_TRUE_LITERAL = 116;
 $.getInterceptor$JSString = function(receiver) {
   if (typeof receiver == 'string') return $.JSString.prototype;
   return $.ObjectInterceptor.prototype;
@@ -6324,7 +6328,7 @@ $.$defineNativeClass('SVGException', {"":"message>",
 // 210 classes
 // 17 !leaf
 (function() {
-  var v0_MediaElement = 'HTMLMediaElement|HTMLAudioElement|HTMLVideoElement', v1_SvgElement = 'SVGElement|SVGAElement|SVGAltGlyphDefElement|SVGTextContentElement|SVGTextPositioningElement|SVGAltGlyphElement|SVGTSpanElement|SVGTRefElement|SVGTextElement|SVGTextPathElement|SVGAltGlyphItemElement|SVGAnimationElement|SVGAnimateColorElement|SVGAnimateElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGSetElement|SVGCircleElement|SVGClipPathElement|SVGComponentTransferFunctionElement|SVGFEFuncBElement|SVGFEFuncRElement|SVGFEFuncGElement|SVGFEFuncAElement|SVGCursorElement|SVGDefsElement|SVGDescElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDisplacementMapElement|SVGFEComponentTransferElement|SVGFEFloodElement|SVGFEGaussianBlurElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMergeNodeElement|SVGFEOffsetElement|SVGFEDiffuseLightingElement|SVGFEMorphologyElement|SVGFEDistantLightElement|SVGFEDropShadowElement|SVGFETurbulenceElement|SVGFilterElement|SVGFEPointLightElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGForeignObjectElement|SVGGElement|SVGGlyphRefElement|SVGHKernElement|SVGImageElement|SVGGlyphElement|SVGFESpotLightElement|SVGLineElement|SVGMPathElement|SVGGradientElement|SVGLinearGradientElement|SVGRadialGradientElement|SVGMarkerElement|SVGPathElement|SVGMetadataElement|SVGMissingGlyphElement|SVGMaskElement|SVGFESpecularLightingElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRectElement|SVGScriptElement|SVGStopElement|SVGStyleElement|SVGSVGElement|SVGSymbolElement|SVGSwitchElement|SVGViewElement|SVGUseElement|SVGTitleElement|SVGVKernElement|SVGFETileElement', v2_Element = [v0_MediaElement, v1_SvgElement, 'Element|HTMLElement|HTMLAnchorElement|HTMLAppletElement|HTMLAreaElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLCanvasElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDirectoryElement|HTMLDivElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFormElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLFrameElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLegendElement|HTMLLabelElement|HTMLLinkElement|HTMLMarqueeElement|HTMLMapElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLSelectElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement'].join('|'), v3_CharacterData = 'CharacterData|Text|CDATASection|Comment', v4_Document = 'Document|HTMLDocument|SVGDocument', v5_DocumentFragment = 'DocumentFragment|ShadowRoot', v6_Node = [v2_Element, v3_CharacterData, v4_Document, v5_DocumentFragment, 'Node|Attr|DocumentType|EntityReference|Notation|ProcessingInstruction'].join('|');
+  var v0_MediaElement = 'HTMLMediaElement|HTMLAudioElement|HTMLVideoElement', v1_SvgElement = 'SVGElement|SVGAElement|SVGAltGlyphDefElement|SVGTextContentElement|SVGTextPositioningElement|SVGAltGlyphElement|SVGTSpanElement|SVGTRefElement|SVGTextElement|SVGTextPathElement|SVGAltGlyphItemElement|SVGAnimationElement|SVGAnimateColorElement|SVGAnimateElement|SVGAnimateTransformElement|SVGAnimateMotionElement|SVGSetElement|SVGCircleElement|SVGClipPathElement|SVGComponentTransferFunctionElement|SVGFEFuncBElement|SVGFEFuncRElement|SVGFEFuncAElement|SVGFEFuncGElement|SVGCursorElement|SVGDefsElement|SVGDescElement|SVGEllipseElement|SVGFEBlendElement|SVGFEColorMatrixElement|SVGFECompositeElement|SVGFEConvolveMatrixElement|SVGFEDisplacementMapElement|SVGFEComponentTransferElement|SVGFEFloodElement|SVGFEDropShadowElement|SVGFEImageElement|SVGFEMergeElement|SVGFEMergeNodeElement|SVGFEOffsetElement|SVGFEPointLightElement|SVGFEMorphologyElement|SVGFEDistantLightElement|SVGFEGaussianBlurElement|SVGFEDiffuseLightingElement|SVGFontElement|SVGFontFaceElement|SVGFontFaceFormatElement|SVGFontFaceNameElement|SVGFontFaceSrcElement|SVGFontFaceUriElement|SVGForeignObjectElement|SVGGElement|SVGGlyphRefElement|SVGHKernElement|SVGImageElement|SVGGlyphElement|SVGFESpotLightElement|SVGLineElement|SVGMaskElement|SVGMPathElement|SVGMarkerElement|SVGPathElement|SVGMetadataElement|SVGMissingGlyphElement|SVGGradientElement|SVGLinearGradientElement|SVGRadialGradientElement|SVGFilterElement|SVGFESpecularLightingElement|SVGFETileElement|SVGFETurbulenceElement|SVGPatternElement|SVGPolygonElement|SVGPolylineElement|SVGRectElement|SVGScriptElement|SVGStopElement|SVGStyleElement|SVGSVGElement|SVGSymbolElement|SVGSwitchElement|SVGViewElement|SVGUseElement|SVGTitleElement|SVGVKernElement', v2_Element = [v0_MediaElement, v1_SvgElement, 'Element|HTMLElement|HTMLAnchorElement|HTMLAppletElement|HTMLAreaElement|HTMLBRElement|HTMLBaseElement|HTMLBaseFontElement|HTMLBodyElement|HTMLButtonElement|HTMLCanvasElement|HTMLContentElement|HTMLDListElement|HTMLDataListElement|HTMLDetailsElement|HTMLDirectoryElement|HTMLDivElement|HTMLEmbedElement|HTMLFieldSetElement|HTMLFontElement|HTMLFormElement|HTMLFrameSetElement|HTMLHRElement|HTMLHeadElement|HTMLHeadingElement|HTMLFrameElement|HTMLHtmlElement|HTMLIFrameElement|HTMLImageElement|HTMLInputElement|HTMLKeygenElement|HTMLLIElement|HTMLLegendElement|HTMLLabelElement|HTMLLinkElement|HTMLMarqueeElement|HTMLMapElement|HTMLMenuElement|HTMLMetaElement|HTMLMeterElement|HTMLModElement|HTMLOListElement|HTMLObjectElement|HTMLOptGroupElement|HTMLOptionElement|HTMLOutputElement|HTMLParagraphElement|HTMLParamElement|HTMLPreElement|HTMLProgressElement|HTMLQuoteElement|HTMLScriptElement|HTMLSelectElement|HTMLShadowElement|HTMLSourceElement|HTMLSpanElement|HTMLStyleElement|HTMLTableCaptionElement|HTMLTableCellElement|HTMLTableColElement|HTMLTableElement|HTMLTableRowElement|HTMLTableSectionElement|HTMLTextAreaElement|HTMLTitleElement|HTMLTrackElement|HTMLUListElement|HTMLUnknownElement'].join('|'), v3_CharacterData = 'CharacterData|Text|CDATASection|Comment', v4_Document = 'Document|HTMLDocument|SVGDocument', v5_DocumentFragment = 'DocumentFragment|ShadowRoot', v6_Node = [v2_Element, v3_CharacterData, v4_Document, v5_DocumentFragment, 'Node|Attr|DocumentType|EntityReference|Notation|ProcessingInstruction'].join('|');
   $.dynamicSetMetadata([['HTMLCollection', 'HTMLCollection|HTMLOptionsCollection'], ['CharacterData', v3_CharacterData], ['SVGElement', v1_SvgElement], ['Document', v4_Document], ['HTMLMediaElement', v0_MediaElement], ['DocumentFragment', v5_DocumentFragment], ['Element', v2_Element], ['Uint8Array', 'Uint8Array|Uint8ClampedArray'], ['Node', v6_Node], ['EventTarget', [v6_Node, 'EventTarget|WebSocket|DOMWindow'].join('|')], ['NodeList', 'NodeList|RadioNodeList']]);
 })();
 
