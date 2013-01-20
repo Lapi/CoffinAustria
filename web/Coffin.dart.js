@@ -1379,7 +1379,7 @@ $$._ChildrenElementList = {"":"Object;_liblib$_element>,_childElements",
  filter$1: function(f) {
   var output, t1, t2;
   output = [];
-  t1 = new $._ChildrenElementList_filter_anon(output, f);
+  t1 = new $._ChildrenElementList_filter_anon(f, output);
   for (t2 = this._childElements, t2 = $.getInterceptor$JSArray(t2).iterator$0(t2); t2.get$hasNext() === true;)
     t1.call$1(t2.next$0());
   return $._FrozenElementList$_wrap(output);
@@ -2789,11 +2789,23 @@ $$._AttributeClassSet = {"":"CssClassSet;_liblib1$_element>",
 }
 };
 
-$$.ServerConnection = {"":"Object;webSocket,url,serverResponseWindow>,carouselContent>",
+$$.CoffinController = {"":"Object;serverConnection,carouselContent>,transferObject",
  getCarousellItems$0: function() {
-  this._sendEncodedMessage$1($.JSON_stringify($.makeLiteralMap(["name", "getCarousellItems"])));
+  var encoded = $.JSON_stringify($.makeLiteralMap(["name", "getCarousellItems"]));
+  this.serverConnection.sendEncodedMessage$1(encoded);
 },
- _sendEncodedMessage$1: function(encodedMessage) {
+ CoffinController$2: function(serverResponseWindow, carouselContent) {
+  var t1;
+  this.serverConnection = $.ServerConnection$("ws://127.0.0.1:1337/ws", serverResponseWindow);
+  t1 = this.serverConnection.webSocket.get$on().get$open();
+  $.getInterceptor$JSArray(t1).add$1(t1, new $.anon(this));
+  t1 = this.serverConnection.webSocket.get$on().get$message();
+  $.getInterceptor$JSArray(t1).add$1(t1, new $.anon0(this));
+}
+};
+
+$$.ServerConnection = {"":"Object;webSocket>,url,serverResponseWindow>,carouselContent>",
+ sendEncodedMessage$1: function(encodedMessage) {
   var t1 = this.webSocket;
   if (!(t1 == null) && $.eqB(t1.get$readyState(), 1))
     this.webSocket.send$1(encodedMessage);
@@ -2804,28 +2816,22 @@ $$.ServerConnection = {"":"Object;webSocket,url,serverResponseWindow>,carouselCo
   var t1, t2;
   t1 = {};
   t1.encounteredError_0 = false;
-  t1 = new $.ServerConnection__init_scheduleReconnect(t1, this, retrySeconds);
   this.serverResponseWindow.displayNotice$1("Connecting to Web socket");
   this.webSocket = $.WebSocket_WebSocket(this.url);
   t2 = this.webSocket.get$on().get$open();
   $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon(this));
   t2 = this.webSocket.get$on().get$close();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon0(t1));
-  t2 = this.webSocket.get$on().get$close();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon1(this));
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon0(this));
+  t1 = new $.ServerConnection__init_scheduleReconnect(t1, retrySeconds, this);
   t2 = this.webSocket.get$on().get$error();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon2(t1));
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon1(t1));
   t2 = this.webSocket.get$on().get$error();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon3(this));
-  t2 = this.webSocket.get$on().get$message();
-  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon4(this));
+  $.getInterceptor$JSArray(t2).add$1(t2, new $.ServerConnection__init_anon2(this));
 },
  _init$0: function() {
   return this._init$1(2);
 },
- ServerConnection$3: function(url, srw, cc) {
-  this.serverResponseWindow = srw;
-  this.carouselContent = cc;
+ ServerConnection$2: function(url, serverResponseWindow) {
   this._init$0();
 }
 };
@@ -2950,70 +2956,19 @@ $$.MyScriptElement = {"":"View;elem",
 }
 };
 
-$$.ServerConnection__init_scheduleReconnect = {"":"Closure;box_0,this_1,retrySeconds_2",
- call$0: function() {
-  var t1, t2, t3, t4;
-  t1 = this.this_1;
-  t2 = t1.get$serverResponseWindow();
-  t3 = this.retrySeconds_2;
-  t2.displayNotice$1("web socket closed, retrying in " + $.S(t3) + " seconds");
-  t2 = this.box_0;
-  if (t2.encounteredError_0 !== true) {
-    t4 = $.window();
-    t1 = new $.ServerConnection__init_scheduleReconnect_anon(t1, t3);
-    if (typeof t3 !== 'number')
-      throw $.iae(t3);
-    t4.setTimeout$2(t1, 1000 * t3);
-  }
-  t2.encounteredError_0 = true;
-}
-};
-
-$$.ServerConnection__init_scheduleReconnect_anon = {"":"Closure;this_3,retrySeconds_4",
- call$0: function() {
-  return this.this_3._init$1($.mul(this.retrySeconds_4, 2));
-}
-};
-
-$$.ServerConnection__init_anon = {"":"Closure;this_5",
+$$.anon = {"":"Closure;this_0",
  call$1: function(e) {
-  var t1 = this.this_5;
-  t1.get$serverResponseWindow().displayNotice$1("Connected");
-  t1.getCarousellItems$0();
+  this.this_0.getCarousellItems$0();
 }
 };
 
-$$.ServerConnection__init_anon0 = {"":"Closure;scheduleReconnect_6",
- call$1: function(e) {
-  return this.scheduleReconnect_6.call$0();
-}
-};
-
-$$.ServerConnection__init_anon1 = {"":"Closure;this_7",
- call$1: function(e) {
-  this.this_7.get$serverResponseWindow().displayNotice$1("web socket closed");
-}
-};
-
-$$.ServerConnection__init_anon2 = {"":"Closure;scheduleReconnect_8",
- call$1: function(e) {
-  return this.scheduleReconnect_8.call$0();
-}
-};
-
-$$.ServerConnection__init_anon3 = {"":"Closure;this_9",
- call$1: function(e) {
-  this.this_9.get$serverResponseWindow().displayNotice$1("Error connecting to ws");
-}
-};
-
-$$.ServerConnection__init_anon4 = {"":"Closure;this_10",
+$$.anon0 = {"":"Closure;this_1",
  call$1: function(e) {
   var transferObject;
   $.print("received message " + $.S(e.get$data()));
   transferObject = $.JSON_parse(e.get$data());
   if ($.eqB($.index(transferObject, "Name"), "getCarousellItems"))
-    this.this_10.get$carouselContent().compose$1(transferObject);
+    this.this_1.get$carouselContent().compose$1(transferObject);
 }
 };
 
@@ -3129,7 +3084,7 @@ $$.convertNativeToDart_AcceptStructuredClone_writeSlot = {"":"Closure;copies_3",
 }
 };
 
-$$.convertNativeToDart_AcceptStructuredClone_walk = {"":"Closure;findSlot_4,readSlot_5,writeSlot_6,mustCopy_7",
+$$.convertNativeToDart_AcceptStructuredClone_walk = {"":"Closure;writeSlot_4,mustCopy_5,findSlot_6,readSlot_7",
  call$1: function(e) {
   var slot, copy, t1, t2, t3, length$, i;
   if (typeof e !== 'object' || e === null || (e.constructor !== Array || !!e.immutable$list) && !e.is$JavaScriptIndexingBehavior())
@@ -3139,14 +3094,14 @@ $$.convertNativeToDart_AcceptStructuredClone_walk = {"":"Closure;findSlot_4,read
   if (e instanceof RegExp)
     throw $.$$throw($.UnimplementedError$("structured clone of RegExp"));
   if (Object.getPrototypeOf(e) === Object.prototype) {
-    slot = this.findSlot_4.call$1(e);
-    copy = this.readSlot_5.call$1(slot);
+    slot = this.findSlot_6.call$1(e);
+    copy = this.readSlot_7.call$1(slot);
     if (!(copy == null))
       return copy;
     copy = $.makeLiteralMap([]);
     if (typeof copy !== 'object' || copy === null || (copy.constructor !== Array || !!copy.immutable$list) && !copy.is$JavaScriptIndexingBehavior())
       return this.call$1$bailout(2, e, copy, slot);
-    this.writeSlot_6.call$2(slot, copy);
+    this.writeSlot_4.call$2(slot, copy);
     for (t1 = $.CONSTANT.iterator$0(Object.keys(e)); t1.get$hasNext() === true;) {
       t2 = t1.next$0();
       t3 = this.call$1(e[t2]);
@@ -3159,18 +3114,18 @@ $$.convertNativeToDart_AcceptStructuredClone_walk = {"":"Closure;findSlot_4,read
     return copy;
   }
   if (e instanceof Array) {
-    slot = this.findSlot_4.call$1(e);
-    copy = this.readSlot_5.call$1(slot);
+    slot = this.findSlot_6.call$1(e);
+    copy = this.readSlot_7.call$1(slot);
     if (!(copy == null))
       return copy;
     length$ = e.length;
-    if (this.mustCopy_7 === true)
+    if (this.mustCopy_5 === true)
       copy = new Array(length$);
     else
       copy = e;
     if (typeof copy !== 'object' || copy === null || (copy.constructor !== Array || !!copy.immutable$list) && !copy.is$JavaScriptIndexingBehavior())
       return this.call$1$bailout(4, e, length$, copy, slot);
-    this.writeSlot_6.call$2(slot, copy);
+    this.writeSlot_4.call$2(slot, copy);
     for (i = 0; i < length$; ++i) {
       if (i >= e.length)
         throw $.ioore(i);
@@ -3225,14 +3180,14 @@ $$.convertNativeToDart_AcceptStructuredClone_walk = {"":"Closure;findSlot_4,read
       if (state0 === 2 || state0 === 0 && Object.getPrototypeOf(e) === Object.prototype)
         switch (state0) {
           case 0:
-            slot = this.findSlot_4.call$1(e);
-            copy = this.readSlot_5.call$1(slot);
+            slot = this.findSlot_6.call$1(e);
+            copy = this.readSlot_7.call$1(slot);
             if (!(copy == null))
               return copy;
             copy = $.makeLiteralMap([]);
           case 2:
             state0 = 0;
-            this.writeSlot_6.call$2(slot, copy);
+            this.writeSlot_4.call$2(slot, copy);
             for (t1 = $.CONSTANT.iterator$0(Object.keys(e)); t1.get$hasNext() === true;) {
               t2 = t1.next$0();
               $.indexSet(copy, t2, this.call$1(e[t2]));
@@ -3244,17 +3199,17 @@ $$.convertNativeToDart_AcceptStructuredClone_walk = {"":"Closure;findSlot_4,read
       if (state0 === 4 || state0 === 3 || state0 === 0 && e instanceof Array)
         switch (state0) {
           case 0:
-            slot = this.findSlot_4.call$1(e);
-            copy = this.readSlot_5.call$1(slot);
+            slot = this.findSlot_6.call$1(e);
+            copy = this.readSlot_7.call$1(slot);
             if (!(copy == null))
               return copy;
             length$ = $.getInterceptor$JSStringJSArray(e).get$length(e);
           case 3:
             state0 = 0;
-            copy = this.mustCopy_7 === true ? new Array(length$) : e;
+            copy = this.mustCopy_5 === true ? new Array(length$) : e;
           case 4:
             state0 = 0;
-            this.writeSlot_6.call$2(slot, copy);
+            this.writeSlot_4.call$2(slot, copy);
             for (i = 0; $.ltB(i, length$); ++i)
               $.indexSet(copy, i, this.call$1($.index(e, i)));
             return copy;
@@ -3286,6 +3241,55 @@ $$._JsonStringifier_stringifyJsonValue_anon = {"":"Closure;box_0,this_1",
 }
 };
 
+$$.ServerConnection__init_anon = {"":"Closure;this_1",
+ call$1: function(e) {
+  this.this_1.get$serverResponseWindow().displayNotice$1("Connected");
+}
+};
+
+$$.ServerConnection__init_anon0 = {"":"Closure;this_2",
+ call$1: function(e) {
+  this.this_2.get$serverResponseWindow().displayNotice$1("web socket closed");
+}
+};
+
+$$.ServerConnection__init_scheduleReconnect = {"":"Closure;box_0,retrySeconds_3,this_4",
+ call$0: function() {
+  var t1, t2, t3, t4;
+  t1 = this.this_4;
+  t2 = t1.get$serverResponseWindow();
+  t3 = this.retrySeconds_3;
+  t2.displayNotice$1("web socket closed, retrying in " + $.S(t3) + " seconds");
+  t2 = this.box_0;
+  if (t2.encounteredError_0 !== true) {
+    t4 = $.window();
+    t1 = new $.ServerConnection__init_scheduleReconnect_anon(t3, t1);
+    if (typeof t3 !== 'number')
+      throw $.iae(t3);
+    t4.setTimeout$2(t1, 1000 * t3);
+  }
+  t2.encounteredError_0 = true;
+}
+};
+
+$$.ServerConnection__init_scheduleReconnect_anon = {"":"Closure;retrySeconds_5,this_6",
+ call$0: function() {
+  return this.this_6._init$1($.mul(this.retrySeconds_5, 2));
+}
+};
+
+$$.ServerConnection__init_anon1 = {"":"Closure;scheduleReconnect_7",
+ call$1: function(e) {
+  return this.scheduleReconnect_7.call$0();
+}
+};
+
+$$.ServerConnection__init_anon2 = {"":"Closure;this_8",
+ call$1: function(e) {
+  this.this_8.get$serverResponseWindow().displayNotice$1("Error connecting to ws");
+}
+};
+
 $$.invokeClosure_anon = {"":"Closure;closure_0",
  call$0: function() {
   return this.closure_0.call$0();
@@ -3298,9 +3302,9 @@ $$.invokeClosure_anon0 = {"":"Closure;arg1_1,closure_2",
 }
 };
 
-$$.invokeClosure_anon1 = {"":"Closure;arg1_3,closure_4,arg2_5",
+$$.invokeClosure_anon1 = {"":"Closure;closure_3,arg1_4,arg2_5",
  call$0: function() {
-  return this.closure_4.call$2(this.arg1_3, this.arg2_5);
+  return this.closure_3.call$2(this.arg1_4, this.arg2_5);
 }
 };
 
@@ -3310,11 +3314,11 @@ $$.FilteredElementList__filtered_anon = {"":"Closure;",
 }
 };
 
-$$._ChildrenElementList_filter_anon = {"":"Closure;output_0,f_1",
+$$._ChildrenElementList_filter_anon = {"":"Closure;f_0,output_1",
  call$1: function(element) {
   var t1;
-  if (this.f_1.call$1(element) === true) {
-    t1 = this.output_0;
+  if (this.f_0.call$1(element) === true) {
+    t1 = this.output_1;
     $.getInterceptor$JSArray(t1).add$1(t1, element);
   }
 }
@@ -3426,6 +3430,16 @@ $.leB = function(a, b) {
   return typeof a === 'number' && typeof b === 'number' ? a <= b : $.le$slow(a, b) === true;
 };
 
+$.index = function(a, index) {
+  var key;
+  if (typeof a == "string" || a.constructor === Array) {
+    key = index >>> 0;
+    if (key === index && key < a.length)
+      return a[key];
+  }
+  return $.index$slow(a, index);
+};
+
 $.indexSet = function(a, index, value) {
   var key;
   if (a.constructor === Array && !a.immutable$list) {
@@ -3457,14 +3471,10 @@ $.add$slow = function(a, b) {
   return a.operator$add$1(b);
 };
 
-$.index = function(a, index) {
-  var key;
-  if (typeof a == "string" || a.constructor === Array) {
-    key = index >>> 0;
-    if (key === index && key < a.length)
-      return a[key];
-  }
-  return $.index$slow(a, index);
+$.mul$slow = function(a, b) {
+  if ($.checkNumbers(a, b))
+    return a * b;
+  return a.operator$mul$1(b);
 };
 
 $.sub$slow = function(a, b) {
@@ -3473,10 +3483,10 @@ $.sub$slow = function(a, b) {
   return a.operator$sub$1(b);
 };
 
-$.mul$slow = function(a, b) {
+$.tdiv = function(a, b) {
   if ($.checkNumbers(a, b))
-    return a * b;
-  return a.operator$mul$1(b);
+    return $.CONSTANT1.truncate$0(a / b);
+  return a.operator$tdiv$1(b);
 };
 
 $.eq = function(a, b) {
@@ -3501,12 +3511,6 @@ $.eqB = function(a, b) {
   return a === b;
 };
 
-$.tdiv = function(a, b) {
-  if ($.checkNumbers(a, b))
-    return $.CONSTANT1.truncate$0(a / b);
-  return a.operator$tdiv$1(b);
-};
-
 $.gt$slow = function(a, b) {
   if ($.checkNumbers(a, b))
     return a > b;
@@ -3525,16 +3529,32 @@ $.lt$slow = function(a, b) {
   return a.operator$lt$1(b);
 };
 
-$.and = function(a, b) {
-  if ($.checkNumbers(a, b))
-    return (a & b) >>> 0;
-  return a.operator$and$1(b);
-};
-
 $.le$slow = function(a, b) {
   if ($.checkNumbers(a, b))
     return a <= b;
   return a.operator$le$1(b);
+};
+
+$.shr = function(a, b) {
+  if ($.checkNumbers(a, b)) {
+    if (b < 0)
+      throw $.$$throw($.ArgumentError$(b));
+    if (a > 0) {
+      if (b > 31)
+        return 0;
+      return a >>> b;
+    }
+    if (b > 31)
+      b = 31;
+    return (a >> b) >>> 0;
+  }
+  return a.operator$shr$1(b);
+};
+
+$.and = function(a, b) {
+  if ($.checkNumbers(a, b))
+    return (a & b) >>> 0;
+  return a.operator$and$1(b);
 };
 
 $.index$slow = function(a, index) {
@@ -3607,22 +3627,6 @@ $.checkNum = function(value) {
   return value;
 };
 
-$.shr = function(a, b) {
-  if ($.checkNumbers(a, b)) {
-    if (b < 0)
-      throw $.$$throw($.ArgumentError$(b));
-    if (a > 0) {
-      if (b > 31)
-        return 0;
-      return a >>> b;
-    }
-    if (b > 31)
-      b = 31;
-    return (a >> b) >>> 0;
-  }
-  return a.operator$shr$1(b);
-};
-
 $.checkString = function(value) {
   if (!(typeof value === 'string'))
     throw $.$$throw($.ArgumentError$(value));
@@ -3693,6 +3697,17 @@ $.makeLiteralMap = function(keyValuePairs) {
   return result;
 };
 
+$.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
+  if ($.eqB(numberOfArguments, 0))
+    return new $.invokeClosure_anon(closure).call$0();
+  else if ($.eqB(numberOfArguments, 1))
+    return new $.invokeClosure_anon0(arg1, closure).call$0();
+  else if ($.eqB(numberOfArguments, 2))
+    return new $.invokeClosure_anon1(closure, arg1, arg2).call$0();
+  else
+    throw $.$$throw($.Exception_Exception("Unsupported number of arguments for wrapped closure"));
+};
+
 $.convertDartClosureToJS = function(closure, arity) {
   var function$;
   if (closure == null)
@@ -3707,17 +3722,6 @@ $.convertDartClosureToJS = function(closure, arity) {
   return function$;
 };
 
-$.invokeClosure = function(closure, isolate, numberOfArguments, arg1, arg2) {
-  if ($.eqB(numberOfArguments, 0))
-    return new $.invokeClosure_anon(closure).call$0();
-  else if ($.eqB(numberOfArguments, 1))
-    return new $.invokeClosure_anon0(arg1, closure).call$0();
-  else if ($.eqB(numberOfArguments, 2))
-    return new $.invokeClosure_anon1(arg1, closure, arg2).call$0();
-  else
-    throw $.$$throw($.Exception_Exception("Unsupported number of arguments for wrapped closure"));
-};
-
 $._ElementCssClassSet$ = function(_element) {
   return new $._ElementCssClassSet(_element);
 };
@@ -3726,12 +3730,12 @@ $.DivElement_DivElement = function() {
   return $.document().$$dom_createElement$1("div");
 };
 
-$.LocalWindowEvents$ = function(_ptr) {
-  return new $.LocalWindowEvents(_ptr);
-};
-
 $.InputElementEvents$ = function(_ptr) {
   return new $.InputElementEvents(_ptr);
+};
+
+$.LocalWindowEvents$ = function(_ptr) {
+  return new $.LocalWindowEvents(_ptr);
 };
 
 $.throwCyclicInit = function(staticName) {
@@ -3943,14 +3947,6 @@ $.lookupDynamicClass = function(hasOwnPropertyFunction, methods, className) {
   return $.callHasOwnProperty(hasOwnPropertyFunction, methods, className) ? methods[className] : null;
 };
 
-$._dynamicMetadata0 = function() {
-  if (typeof($dynamicMetadata) === "undefined") {
-    var t1 = [];
-    $._dynamicMetadata(t1);
-  }
-  return $dynamicMetadata;
-};
-
 $.dynamicFunction = function(name$) {
   var f, methods, dartMethod, bind;
   f = Object.prototype[name$];
@@ -3966,23 +3962,16 @@ $.dynamicFunction = function(name$) {
   return methods;
 };
 
-$._dynamicMetadata = function(table) {
-  $dynamicMetadata = table;
+$._dynamicMetadata0 = function() {
+  if (typeof($dynamicMetadata) === "undefined") {
+    var t1 = [];
+    $._dynamicMetadata(t1);
+  }
+  return $dynamicMetadata;
 };
 
-$.buildDynamicMetadata = function(inputTable) {
-  var result, i, tag, tags, set, tagNames, j;
-  result = [];
-  for (i = 0; i < inputTable.length; ++i) {
-    tag = inputTable[i][0];
-    tags = inputTable[i][1];
-    set = {};
-    tagNames = tags.split("|");
-    for (j = 0; j < tagNames.length; ++j)
-      set[tagNames[j]] = true;
-    result.push($.MetaInfo$(tag, tags, set));
-  }
-  return result;
+$._dynamicMetadata = function(table) {
+  $dynamicMetadata = table;
 };
 
 $.dynamicSetMetadata = function(inputTable) {
@@ -3990,20 +3979,20 @@ $.dynamicSetMetadata = function(inputTable) {
   $._dynamicMetadata(t1);
 };
 
-$.regExpExec = function(regExp, str) {
-  var result = $.regExpGetNative(regExp).exec(str);
-  if (result == null)
-    return;
-  return result;
-};
-
-$.regExpTest = function(regExp, str) {
-  return $.regExpGetNative(regExp).test(str);
+$.IllegalJSRegExpException$ = function(_pattern, _errmsg) {
+  return new $.IllegalJSRegExpException(_pattern, _errmsg);
 };
 
 $.regExpGetNative = function(regExp) {
   var r = regExp._re;
   return r == null ? regExp._re = $.regExpMakeNative(regExp, false) : r;
+};
+
+$.regExpExec = function(regExp, str) {
+  var result = $.regExpGetNative(regExp).exec(str);
+  if (result == null)
+    return;
+  return result;
 };
 
 $.regExpMakeNative = function(regExp, global, exception) {
@@ -4036,6 +4025,16 @@ $.regExpMakeNative = function(regExp, global, exception) {
     throw $.$$throw($.IllegalJSRegExpException$(pattern, String(e)));
   }
 
+};
+
+$.regExpTest = function(regExp, str) {
+  return $.regExpGetNative(regExp).test(str);
+};
+
+$._HashSetImpl$ = function() {
+  var t1 = new $._HashSetImpl(null);
+  t1._HashSetImpl$0();
+  return t1;
 };
 
 $.allMatchesInStringUnchecked = function(needle, haystack) {
@@ -4097,18 +4096,23 @@ $.stringReplaceAllUnchecked = function(receiver, from, to) {
     return $.stringReplaceJS(receiver, $.regExpMakeNative($.JSSyntaxRegExp$(from.replace($.regExpMakeNative($.get$quoteRegExp(), true), "\\$&"), false, false), true), to);
 };
 
+$.buildDynamicMetadata = function(inputTable) {
+  var result, i, tag, tags, set, tagNames, j;
+  result = [];
+  for (i = 0; i < inputTable.length; ++i) {
+    tag = inputTable[i][0];
+    tags = inputTable[i][1];
+    set = {};
+    tagNames = tags.split("|");
+    for (j = 0; j < tagNames.length; ++j)
+      set[tagNames[j]] = true;
+    result.push($.MetaInfo$(tag, tags, set));
+  }
+  return result;
+};
+
 $.stringJoinUnchecked = function(array, separator) {
   return array.join(separator);
-};
-
-$.IllegalJSRegExpException$ = function(_pattern, _errmsg) {
-  return new $.IllegalJSRegExpException(_pattern, _errmsg);
-};
-
-$._HashSetImpl$ = function() {
-  var t1 = new $._HashSetImpl(null);
-  t1._HashSetImpl$0();
-  return t1;
 };
 
 $._HashMapImpl$ = function() {
@@ -4117,16 +4121,16 @@ $._HashMapImpl$ = function() {
   return t1;
 };
 
-$.print = function(object) {
-  $.Primitives_printString(object);
-};
-
 $._HashMapImpl__computeLoadLimit = function(capacity) {
   return $.tdiv(capacity * 3, 4);
 };
 
 $._HashMapImpl__nextProbe = function(currentProbe, numberOfProbes, length$) {
   return $.and($.add(currentProbe, numberOfProbes), $.sub(length$, 1));
+};
+
+$.print = function(object) {
+  $.Primitives_printString(object);
 };
 
 $.MediaElementEvents$ = function(_ptr) {
@@ -4162,7 +4166,7 @@ $.main = function() {
   script = $.query("#myScript");
   $.serverResponseWindow = $.ServerResponseWindow$(serverResponseElem);
   $.carouselContent = $.CarouselContent$(carousell);
-  $.serverConnection = $.ServerConnection$("ws://127.0.0.1:1337/ws", $.serverResponseWindow, $.carouselContent);
+  $.coffinController = $.CoffinController$($.serverResponseWindow, $.carouselContent);
   $.myScriptElement = $.MyScriptElement$(script);
   $.myScriptElement.addCarousellFade$0();
 };
@@ -4185,14 +4189,14 @@ $.ServerResponseWindow$ = function(elem) {
   return t1;
 };
 
+$._ElementAttributeMap$ = function(element) {
+  return new $._ElementAttributeMap(element);
+};
+
 $.CarouselContent$ = function(elem) {
   var t1 = new $.CarouselContent(0, elem);
   t1.View$1(elem);
   return t1;
-};
-
-$._ElementAttributeMap$ = function(element) {
-  return new $._ElementAttributeMap(element);
 };
 
 $._browserPrefix = function() {
@@ -4208,9 +4212,15 @@ $._browserPrefix = function() {
   return $._cachedBrowserPrefix;
 };
 
-$.ServerConnection$ = function(url, srw, cc) {
-  var t1 = new $.ServerConnection(null, url, null, null);
-  t1.ServerConnection$3(url, srw, cc);
+$.CoffinController$ = function(serverResponseWindow, carouselContent) {
+  var t1 = new $.CoffinController(null, carouselContent, null);
+  t1.CoffinController$2(serverResponseWindow, carouselContent);
+  return t1;
+};
+
+$.ServerConnection$ = function(url, serverResponseWindow) {
+  var t1 = new $.ServerConnection(null, url, serverResponseWindow, null);
+  t1.ServerConnection$2(url, serverResponseWindow);
   return t1;
 };
 
@@ -4218,18 +4228,6 @@ $.MyScriptElement$ = function(elem) {
   var t1 = new $.MyScriptElement(elem);
   t1.View$1(elem);
   return t1;
-};
-
-$.WebSocketEvents$ = function(_ptr) {
-  return new $.WebSocketEvents(_ptr);
-};
-
-$.Events$ = function(_ptr) {
-  return new $.Events(_ptr);
-};
-
-$._FrozenCssClassSet$ = function() {
-  return new $._FrozenCssClassSet();
 };
 
 $.JSON_parse = function(json) {
@@ -4240,22 +4238,111 @@ $.JSON_stringify = function(object) {
   return $._JsonStringifier_stringify(object);
 };
 
-$.MetaInfo$ = function(_tag, _tags, _set) {
-  return new $.MetaInfo(_tag, _tags, _set);
+$._FrozenCssClassSet$ = function() {
+  return new $._FrozenCssClassSet();
 };
 
 $.ListIterator$ = function(list) {
   return new $.ListIterator(0, list);
 };
 
+$.MetaInfo$ = function(_tag, _tags, _set) {
+  return new $.MetaInfo(_tag, _tags, _set);
+};
+
+$.Collections_contains = function(iterable, element) {
+  var t1;
+  for (t1 = $.getInterceptor$JSArray(iterable).iterator$0(iterable); t1.get$hasNext() === true;)
+    if (element === t1.next$0())
+      return true;
+  return false;
+};
+
+$.Collections_forEach = function(iterable, f) {
+  var t1;
+  for (t1 = $.getInterceptor$JSArray(iterable).iterator$0(iterable); t1.get$hasNext() === true;)
+    f.call$1(t1.next$0());
+};
+
+$.Collections_filter = function(source, destination, f) {
+  var t1, t2;
+  for (t1 = $.getInterceptor$JSArray(source).iterator$0(source); t1.get$hasNext() === true;) {
+    t2 = t1.next$0();
+    if (f.call$1(t2) === true)
+      destination.push(t2);
+  }
+  return destination;
+};
+
+$.Collections__emitCollection = function(c, result, visiting) {
+  var t1, isList, t2, t3, first, t4;
+  t1 = $.getInterceptor$JSArray(visiting);
+  t1.add$1(visiting, c);
+  isList = typeof c === 'object' && c !== null && (c.constructor === Array || c.is$List());
+  t2 = $.getInterceptor$JSArray(result);
+  t2.add$1(result, isList ? "[" : "{");
+  for (t3 = $.getInterceptor$JSArray(c).iterator$0(c), first = true; t3.get$hasNext() === true; first = false) {
+    t4 = t3.next$0();
+    if (!first)
+      t2.add$1(result, ", ");
+    $.Collections__emitObject(t4, result, visiting);
+  }
+  t2.add$1(result, isList ? "]" : "}");
+  t1.removeLast$0(visiting);
+};
+
+$.Collections__emitObject = function(o, result, visiting) {
+  var t1;
+  if (typeof o === 'object' && o !== null && (o.constructor === Array || o.is$Collection()))
+    if ($.Collections__containsRef(visiting, o)) {
+      t1 = $.getInterceptor$JSArray(result);
+      t1.add$1(result, typeof o === 'object' && o !== null && (o.constructor === Array || o.is$List()) ? "[...]" : "{...}");
+    } else
+      $.Collections__emitCollection(o, result, visiting);
+  else if (typeof o === 'object' && o !== null && o.is$Map())
+    if ($.Collections__containsRef(visiting, o))
+      $.getInterceptor$JSArray(result).add$1(result, "{...}");
+    else
+      $.Maps__emitMap(o, result, visiting);
+  else
+    $.getInterceptor$JSArray(result).add$1(result, o);
+};
+
+$.Collections__containsRef = function(c, ref) {
+  var t1, t2;
+  for (t1 = $.getInterceptor$JSArray(c).iterator$0(c); t1.get$hasNext() === true;) {
+    t2 = t1.next$0();
+    if (t2 == null ? ref == null : t2 === ref)
+      return true;
+  }
+  return false;
+};
+
+$.Collections_collectionToString = function(c) {
+  var result = $.StringBuffer_StringBuffer("");
+  $.Collections__emitCollection(c, result, $.List_List(null));
+  return $.getInterceptor(result).toString$0(result);
+};
+
 $._JsonStringifier$ = function(sb) {
   return new $._JsonStringifier(sb, []);
 };
 
-$._JsonStringifier_stringify = function(object) {
-  var output = $.StringBuffer_StringBuffer("");
-  $._JsonStringifier$(output).stringifyValue$1(object);
-  return $.getInterceptor(output).toString$0(output);
+$.StateError$ = function(message) {
+  return new $.StateError(message);
+};
+
+$.Error_safeToString = function(object) {
+  var t1;
+  if (typeof object === 'number' && Math.floor(object) === object || typeof object === 'number' || typeof object === 'boolean' || null == object)
+    return $.getInterceptor(object).toString$0(object);
+  if (typeof object === 'string') {
+    t1 = $.CONSTANT2.replaceAll$2(object, "\\", "\\\\");
+    t1 = $.getInterceptor$JSString(t1).replaceAll$2(t1, "\n", "\\n");
+    t1 = $.getInterceptor$JSString(t1).replaceAll$2(t1, "\r", "\\r");
+    return "\"" + $.S($.getInterceptor$JSString(t1).replaceAll$2(t1, "\"", "\\\"")) + "\"";
+  }
+  return $.Primitives_objectToString(object);
 };
 
 $._JsonStringifier_escape = function(sb, s) {
@@ -4343,111 +4430,22 @@ $._JsonStringifier_escape = function(sb, s) {
   t1.add$1(sb, needsEscape ? $.String_String$fromCharCodes(charCodes) : s);
 };
 
-$.Collections_contains = function(iterable, element) {
-  var t1;
-  for (t1 = $.getInterceptor$JSArray(iterable).iterator$0(iterable); t1.get$hasNext() === true;)
-    if (element === t1.next$0())
-      return true;
-  return false;
-};
-
-$.Collections_forEach = function(iterable, f) {
-  var t1;
-  for (t1 = $.getInterceptor$JSArray(iterable).iterator$0(iterable); t1.get$hasNext() === true;)
-    f.call$1(t1.next$0());
-};
-
-$.Collections_filter = function(source, destination, f) {
-  var t1, t2;
-  for (t1 = $.getInterceptor$JSArray(source).iterator$0(source); t1.get$hasNext() === true;) {
-    t2 = t1.next$0();
-    if (f.call$1(t2) === true)
-      destination.push(t2);
-  }
-  return destination;
-};
-
-$.Collections_collectionToString = function(c) {
-  var result = $.StringBuffer_StringBuffer("");
-  $.Collections__emitCollection(c, result, $.List_List(null));
-  return $.getInterceptor(result).toString$0(result);
-};
-
-$.Collections__emitCollection = function(c, result, visiting) {
-  var t1, isList, t2, t3, first, t4;
-  t1 = $.getInterceptor$JSArray(visiting);
-  t1.add$1(visiting, c);
-  isList = typeof c === 'object' && c !== null && (c.constructor === Array || c.is$List());
-  t2 = $.getInterceptor$JSArray(result);
-  t2.add$1(result, isList ? "[" : "{");
-  for (t3 = $.getInterceptor$JSArray(c).iterator$0(c), first = true; t3.get$hasNext() === true; first = false) {
-    t4 = t3.next$0();
-    if (!first)
-      t2.add$1(result, ", ");
-    $.Collections__emitObject(t4, result, visiting);
-  }
-  t2.add$1(result, isList ? "]" : "}");
-  t1.removeLast$0(visiting);
-};
-
-$.Collections__emitObject = function(o, result, visiting) {
-  var t1;
-  if (typeof o === 'object' && o !== null && (o.constructor === Array || o.is$Collection()))
-    if ($.Collections__containsRef(visiting, o)) {
-      t1 = $.getInterceptor$JSArray(result);
-      t1.add$1(result, typeof o === 'object' && o !== null && (o.constructor === Array || o.is$List()) ? "[...]" : "{...}");
-    } else
-      $.Collections__emitCollection(o, result, visiting);
-  else if (typeof o === 'object' && o !== null && o.is$Map())
-    if ($.Collections__containsRef(visiting, o))
-      $.getInterceptor$JSArray(result).add$1(result, "{...}");
-    else
-      $.Maps__emitMap(o, result, visiting);
-  else
-    $.getInterceptor$JSArray(result).add$1(result, o);
-};
-
-$.Collections__containsRef = function(c, ref) {
-  var t1, t2;
-  for (t1 = $.getInterceptor$JSArray(c).iterator$0(c); t1.get$hasNext() === true;) {
-    t2 = t1.next$0();
-    if (t2 == null ? ref == null : t2 === ref)
-      return true;
-  }
-  return false;
-};
-
-$.JsonUnsupportedObjectError$ = function(unsupportedObject) {
-  return new $.JsonUnsupportedObjectError(unsupportedObject, null);
-};
-
-$.StateError$ = function(message) {
-  return new $.StateError(message);
-};
-
-$.Error_safeToString = function(object) {
-  var t1;
-  if (typeof object === 'number' && Math.floor(object) === object || typeof object === 'number' || typeof object === 'boolean' || null == object)
-    return $.getInterceptor(object).toString$0(object);
-  if (typeof object === 'string') {
-    t1 = $.CONSTANT2.replaceAll$2(object, "\\", "\\\\");
-    t1 = $.getInterceptor$JSString(t1).replaceAll$2(t1, "\n", "\\n");
-    t1 = $.getInterceptor$JSString(t1).replaceAll$2(t1, "\r", "\\r");
-    return "\"" + $.S($.getInterceptor$JSString(t1).replaceAll$2(t1, "\"", "\\\"")) + "\"";
-  }
-  return $.Primitives_objectToString(object);
-};
-
-$.JsonUnsupportedObjectError$withCause = function(unsupportedObject, cause) {
-  return new $.JsonUnsupportedObjectError(unsupportedObject, cause);
+$._JsonStringifier_stringify = function(object) {
+  var output = $.StringBuffer_StringBuffer("");
+  $._JsonStringifier$(output).stringifyValue$1(object);
+  return $.getInterceptor(output).toString$0(output);
 };
 
 $.UnsupportedError$ = function(message) {
   return new $.UnsupportedError(message);
 };
 
-$.FixedSizeListIterator$ = function(array) {
-  return new $.FixedSizeListIterator($.getInterceptor$JSStringJSArray(array).get$length(array), array, 0);
+$.JsonUnsupportedObjectError$withCause = function(unsupportedObject, cause) {
+  return new $.JsonUnsupportedObjectError(unsupportedObject, cause);
+};
+
+$.JsonUnsupportedObjectError$ = function(unsupportedObject) {
+  return new $.JsonUnsupportedObjectError(unsupportedObject, null);
 };
 
 $.ArgumentError$ = function(message) {
@@ -4477,6 +4475,10 @@ $.JSSyntaxRegExp$ = function(pattern, ignoreCase, multiLine) {
   return new $.JSSyntaxRegExp(pattern, multiLine, ignoreCase);
 };
 
+$.FixedSizeListIterator$ = function(array) {
+  return new $.FixedSizeListIterator($.getInterceptor$JSStringJSArray(array).get$length(array), array, 0);
+};
+
 $.JSSyntaxRegExp__globalVersionOf = function(other) {
   var t1, t2, re;
   t1 = other.get$pattern();
@@ -4486,24 +4488,20 @@ $.JSSyntaxRegExp__globalVersionOf = function(other) {
   return re;
 };
 
-$._AllMatchesIterator$ = function(re, _str) {
-  return new $._AllMatchesIterator($.JSSyntaxRegExp__globalVersionOf(re), _str, null, false);
-};
-
 $.RegExp_RegExp = function(pattern, ignoreCase, multiLine) {
   return $.JSSyntaxRegExp$(pattern, ignoreCase, multiLine);
 };
 
-$._AllMatchesIterable$ = function(_re, _str) {
-  return new $._AllMatchesIterable(_re, _str);
+$.WebSocketEvents$ = function(_ptr) {
+  return new $.WebSocketEvents(_ptr);
 };
 
 $.StringMatch$ = function(start, str, pattern) {
   return new $.StringMatch(start, str, pattern);
 };
 
-$._MatchImplementation$ = function(pattern, str, start, end, _groups) {
-  return new $._MatchImplementation(pattern, str, start, end, _groups);
+$._AllMatchesIterable$ = function(_re, _str) {
+  return new $._AllMatchesIterable(_re, _str);
 };
 
 $.Primitives_objectHashCode = function(object) {
@@ -4516,25 +4514,6 @@ $.Primitives_objectHashCode = function(object) {
   return hash;
 };
 
-$.Primitives_printString = function(string) {
-  if ("\nThis program is using an experimental feature called \"mirrors\".  As\ncurrently implemented, mirrors do not work with minification, and will\ncause spurious errors depending on how code was optimized.\n\nThe authors of this program are aware of these problems and have\ndecided the thrill of using an experimental feature is outweighing the\nrisks.  Furthermore, the authors of this program understand that\nlong-term, to fix the problems mentioned above, mirrors may have\nnegative impact on size and performance of Dart programs compiled to\nJavaScript.\n" === string)
-    $.Primitives_mirrorsEnabled = true;
-  else if (typeof dartPrint == "function") {
-    dartPrint(string);
-    return;
-  }
-  if (typeof window == "object") {
-    if (typeof console == "object")
-      console.log(string);
-    return;
-  }
-  if (typeof print == "function") {
-    print(string);
-    return;
-  }
-  throw 'Unable to print message: ' + String(string);
-};
-
 $.Primitives_parseInt = function(string) {
   var match, base, result;
   $.checkString(string);
@@ -4544,17 +4523,6 @@ $.Primitives_parseInt = function(string) {
   base = !($.index(match, 1) == null) ? 16 : 10;
   result = parseInt(string, base);
   if ($.CONSTANT1.get$isNaN(result) === true)
-    throw $.$$throw($.FormatException$(string));
-  return result;
-};
-
-$.Primitives_parseDouble = function(string) {
-  var result;
-  $.checkString(string);
-  if (!/^\s*(?:NaN|[+-]?(?:Infinity|(?:\.\d+|\d+(?:\.\d+)?)(?:[eE][+-]?\d+)?))\s*$/.test(string))
-    throw $.$$throw($.FormatException$(string));
-  result = parseFloat(string);
-  if ($.CONSTANT1.get$isNaN(result) === true && !$.eqB(string, "NaN"))
     throw $.$$throw($.FormatException$(string));
   return result;
 };
@@ -4586,15 +4554,15 @@ $.Primitives_newList = function(length$) {
   return result;
 };
 
-$.convertNativeToDart_SerializedScriptValue = function(object) {
-  return $.convertNativeToDart_AcceptStructuredClone(object, true);
-};
-
-$.convertNativeToDart_AcceptStructuredClone = function(object, mustCopy) {
-  var values, copies;
-  values = [];
-  copies = [];
-  return new $.convertNativeToDart_AcceptStructuredClone_walk(new $.convertNativeToDart_AcceptStructuredClone_findSlot(values, copies), new $.convertNativeToDart_AcceptStructuredClone_readSlot(copies), new $.convertNativeToDart_AcceptStructuredClone_writeSlot(copies), mustCopy).call$1(object);
+$.Primitives_parseDouble = function(string) {
+  var result;
+  $.checkString(string);
+  if (!/^\s*(?:NaN|[+-]?(?:Infinity|(?:\.\d+|\d+(?:\.\d+)?)(?:[eE][+-]?\d+)?))\s*$/.test(string))
+    throw $.$$throw($.FormatException$(string));
+  result = parseFloat(string);
+  if ($.CONSTANT1.get$isNaN(result) === true && !$.eqB(string, "NaN"))
+    throw $.$$throw($.FormatException$(string));
+  return result;
 };
 
 $.Primitives__fromCharCodeApply = function(array) {
@@ -4645,12 +4613,48 @@ $.Primitives_stringFromCharCodes = function(charCodes) {
   return $.Primitives__fromCharCodeApply(charCodes);
 };
 
-$.NoSuchMethodError$ = function(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames) {
-  return new $.NoSuchMethodError(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames);
+$._AllMatchesIterator$ = function(re, _str) {
+  return new $._AllMatchesIterator($.JSSyntaxRegExp__globalVersionOf(re), _str, null, false);
+};
+
+$.Primitives_printString = function(string) {
+  if ("\nThis program is using an experimental feature called \"mirrors\".  As\ncurrently implemented, mirrors do not work with minification, and will\ncause spurious errors depending on how code was optimized.\n\nThe authors of this program are aware of these problems and have\ndecided the thrill of using an experimental feature is outweighing the\nrisks.  Furthermore, the authors of this program understand that\nlong-term, to fix the problems mentioned above, mirrors may have\nnegative impact on size and performance of Dart programs compiled to\nJavaScript.\n" === string)
+    $.Primitives_mirrorsEnabled = true;
+  else if (typeof dartPrint == "function") {
+    dartPrint(string);
+    return;
+  }
+  if (typeof window == "object") {
+    if (typeof console == "object")
+      console.log(string);
+    return;
+  }
+  if (typeof print == "function") {
+    print(string);
+    return;
+  }
+  throw 'Unable to print message: ' + String(string);
+};
+
+$._MatchImplementation$ = function(pattern, str, start, end, _groups) {
+  return new $._MatchImplementation(pattern, str, start, end, _groups);
 };
 
 $.StringBuffer_StringBuffer = function(content$) {
   return $._StringBufferImpl$(content$);
+};
+
+$.convertNativeToDart_SerializedScriptValue = function(object) {
+  return $.convertNativeToDart_AcceptStructuredClone(object, true);
+};
+
+$.convertNativeToDart_AcceptStructuredClone = function(object, mustCopy) {
+  var values, copies, t1, t2;
+  values = [];
+  copies = [];
+  t1 = new $.convertNativeToDart_AcceptStructuredClone_findSlot(values, copies);
+  t2 = new $.convertNativeToDart_AcceptStructuredClone_readSlot(copies);
+  return new $.convertNativeToDart_AcceptStructuredClone_walk(new $.convertNativeToDart_AcceptStructuredClone_writeSlot(copies), mustCopy, t1, t2).call$1(object);
 };
 
 $.Maps_mapToString = function(m) {
@@ -4672,15 +4676,8 @@ $.Maps__emitMap = function(m, result, visiting) {
   t2.removeLast$0(visiting);
 };
 
-$.ImageElement_ImageElement = function(height, src, width) {
-  var e = $.document().$$dom_createElement$1("img");
-  if (!(src == null))
-    e.set$src(src);
-  if (!(width == null))
-    e.set$width(width);
-  if (!(height == null))
-    e.set$height(height);
-  return e;
+$.NoSuchMethodError$ = function(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames) {
+  return new $.NoSuchMethodError(_receiver, _memberName, _arguments, _namedArguments, existingArgumentNames);
 };
 
 $._StringBufferImpl$ = function(content$) {
@@ -4723,6 +4720,17 @@ $.Strings__toJsStringArray = function(strings) {
   return array;
 };
 
+$.ImageElement_ImageElement = function(height, src, width) {
+  var e = $.document().$$dom_createElement$1("img");
+  if (!(src == null))
+    e.set$src(src);
+  if (!(width == null))
+    e.set$width(width);
+  if (!(height == null))
+    e.set$height(height);
+  return e;
+};
+
 $.RuntimeError$ = function(message) {
   return new $.RuntimeError(message);
 };
@@ -4741,16 +4749,16 @@ $._JsonParser$ = function(json) {
   return t1;
 };
 
-$.WebSocket_WebSocket = function(url) {
-  return new WebSocket(url);
-};
-
 $.FormatException$ = function(message) {
   return new $.FormatException(message);
 };
 
 $.Exception_Exception = function(message) {
   return $._ExceptionImplementation$(message);
+};
+
+$.WebSocket_WebSocket = function(url) {
+  return new WebSocket(url);
 };
 
 $.LinkedHashMap_LinkedHashMap = function() {
@@ -4763,18 +4771,26 @@ $._LinkedHashMapImpl$ = function() {
   return t1;
 };
 
+$.Set_Set = function() {
+  return $._HashSetImpl$();
+};
+
 $.DoubleLinkedQueue$ = function() {
   var t1 = new $.DoubleLinkedQueue(null);
   t1.DoubleLinkedQueue$0();
   return t1;
 };
 
-$.Queue_Queue = function() {
-  return $.DoubleLinkedQueue$();
+$.DocumentEvents$ = function(_ptr) {
+  return new $.DocumentEvents(_ptr);
 };
 
 $._KeyValuePair$ = function(key, value) {
   return new $._KeyValuePair(key, value);
+};
+
+$.Queue_Queue = function() {
+  return $.DoubleLinkedQueue$();
 };
 
 $.DoubleLinkedQueueEntry$ = function(e) {
@@ -4783,18 +4799,18 @@ $.DoubleLinkedQueueEntry$ = function(e) {
   return t1;
 };
 
-$.DocumentEvents$ = function(_ptr) {
-  return new $.DocumentEvents(_ptr);
-};
-
-$.Set_Set = function() {
-  return $._HashSetImpl$();
-};
-
 $.String_String$fromCharCodes = function(charCodes) {
   if (!$.isJsArray(charCodes))
     charCodes = $.List_List$from(charCodes);
   return $.Primitives_stringFromCharCodes(charCodes);
+};
+
+$.ElementEvents$ = function(_ptr) {
+  return new $.ElementEvents(_ptr);
+};
+
+$.List_List = function(length$) {
+  return $.Primitives_newList(length$);
 };
 
 $._DoubleLinkedQueueIterator$ = function(_sentinel) {
@@ -4810,10 +4826,6 @@ $._DoubleLinkedQueueEntrySentinel$ = function() {
   return t1;
 };
 
-$.List_List = function(length$) {
-  return $.Primitives_newList(length$);
-};
-
 $.List_List$from = function(other) {
   var list, t1;
   list = $.List_List(null);
@@ -4822,8 +4834,8 @@ $.List_List$from = function(other) {
   return list;
 };
 
-$.ElementEvents$ = function(_ptr) {
-  return new $.ElementEvents(_ptr);
+$.Events$ = function(_ptr) {
+  return new $.Events(_ptr);
 };
 
 $._ChildrenElementList$_wrap = function(element) {
@@ -5049,33 +5061,13 @@ $.CONSTANT0 = new Isolate.$isolateProperties.NullThrownError();
 $.CONSTANT4 = new Isolate.$isolateProperties._DeletedKeySentinel();
 $.CONSTANT = new Isolate.$isolateProperties.JSArray();
 $.CONSTANT1 = new Isolate.$isolateProperties.JSNumber();
-$.Primitives_DOLLAR_CHAR_VALUE = 36;
-$._JsonParser_STRING_LITERAL = 34;
-$._JsonParser_NUMBER_LITERAL = 45;
-$._JsonParser_NULL_LITERAL = 110;
-$._JsonParser_FALSE_LITERAL = 102;
-$._JsonParser_TRUE_LITERAL = 116;
-$._JsonParser_CHAR_U = 117;
-$._JsonParser_WHITESPACE = 32;
-$._JsonParser_LAST_ASCII = 125;
-$._cachedBrowserPrefix = null;
-$._JsonParser_NULL_STRING = "null";
-$._JsonParser_TRUE_STRING = "true";
-$._JsonParser_FALSE_STRING = "false";
-$._JsonParser_tokens = null;
 $._HashMapImpl__DELETED_KEY = Isolate.$isolateProperties.CONSTANT4;
 $._HashMapImpl__INITIAL_CAPACITY = 8;
 $.WebSocket_OPEN = 1;
-$._getTypeNameOf = null;
-$.serverConnection = null;
-$.serverResponseWindow = null;
 $._JsonParser_BACKSPACE = 8;
-$.carouselContent = null;
 $._JsonParser_TAB = 9;
-$.myScriptElement = null;
 $._JsonParser_NEW_LINE = 10;
 $._JsonParser_FORM_FEED = 12;
-$.MIRROR_OPT_IN_MESSAGE = "\nThis program is using an experimental feature called \"mirrors\".  As\ncurrently implemented, mirrors do not work with minification, and will\ncause spurious errors depending on how code was optimized.\n\nThe authors of this program are aware of these problems and have\ndecided the thrill of using an experimental feature is outweighing the\nrisks.  Furthermore, the authors of this program understand that\nlong-term, to fix the problems mentioned above, mirrors may have\nnegative impact on size and performance of Dart programs compiled to\nJavaScript.\n";
 $._JsonParser_CARRIAGE_RETURN = 13;
 $._JsonParser_SPACE = 32;
 $._JsonParser_QUOTE = 34;
@@ -5091,7 +5083,6 @@ $._JsonParser_CHAR_3 = 51;
 $._JsonParser_CHAR_4 = 52;
 $._JsonParser_CHAR_5 = 53;
 $._JsonParser_CHAR_6 = 54;
-$._JsonParser_CHAR_7 = 55;
 $._JsonParser_CHAR_8 = 56;
 $._JsonParser_CHAR_9 = 57;
 $._JsonParser_COLON = 58;
@@ -5099,16 +5090,37 @@ $._JsonParser_CHAR_CAPITAL_E = 69;
 $._JsonParser_LBRACKET = 91;
 $._JsonParser_BACKSLASH = 92;
 $._JsonParser_RBRACKET = 93;
+$._JsonParser_CHAR_7 = 55;
 $._JsonParser_CHAR_B = 98;
 $._JsonParser_CHAR_E = 101;
 $._JsonParser_CHAR_F = 102;
 $._JsonParser_CHAR_N = 110;
-$._JsonParser_CHAR_T = 116;
-$.Primitives_mirrorsEnabled = false;
 $.Primitives_hashCodeSeed = 0;
-$._JsonParser_CHAR_R = 114;
+$.serverResponseWindow = null;
+$.carouselContent = null;
+$._JsonParser_CHAR_T = 116;
 $._JsonParser_LBRACE = 123;
+$.myScriptElement = null;
 $._JsonParser_RBRACE = 125;
+$.Primitives_DOLLAR_CHAR_VALUE = 36;
+$._JsonParser_STRING_LITERAL = 34;
+$._JsonParser_NUMBER_LITERAL = 45;
+$.Primitives_mirrorsEnabled = false;
+$._JsonParser_NULL_LITERAL = 110;
+$._JsonParser_CHAR_R = 114;
+$._JsonParser_FALSE_LITERAL = 102;
+$._JsonParser_TRUE_LITERAL = 116;
+$._JsonParser_CHAR_U = 117;
+$._JsonParser_WHITESPACE = 32;
+$._JsonParser_LAST_ASCII = 125;
+$._JsonParser_NULL_STRING = "null";
+$._JsonParser_TRUE_STRING = "true";
+$._JsonParser_FALSE_STRING = "false";
+$._JsonParser_tokens = null;
+$.MIRROR_OPT_IN_MESSAGE = "\nThis program is using an experimental feature called \"mirrors\".  As\ncurrently implemented, mirrors do not work with minification, and will\ncause spurious errors depending on how code was optimized.\n\nThe authors of this program are aware of these problems and have\ndecided the thrill of using an experimental feature is outweighing the\nrisks.  Furthermore, the authors of this program understand that\nlong-term, to fix the problems mentioned above, mirrors may have\nnegative impact on size and performance of Dart programs compiled to\nJavaScript.\n";
+$._getTypeNameOf = null;
+$.coffinController = null;
+$._cachedBrowserPrefix = null;
 $.getInterceptor$JSString = function(receiver) {
   if (typeof receiver == 'string') return $.JSString.prototype;
   return $.ObjectInterceptor.prototype;
